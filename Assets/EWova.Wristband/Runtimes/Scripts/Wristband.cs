@@ -1,3 +1,5 @@
+using EWova.Localization;
+
 using System;
 
 using UnityEngine;
@@ -18,15 +20,19 @@ namespace EWova.Wristband
         public Button MainMenuBTN;
         public CanvasGroup ChildMenuCanvasGroup;
         public Animator Animator;
+        public Localizer Localizer;
         [SerializeField] private FeatureGroup[] _featureGroups;
+        public LocalizationLang LocalizationLang = LocalizationLang.auto;
 
         private bool _isMenuOpen = false;
         private float _openingIdleTime = 0f;
         private float _animT = 0;
         private bool _isUIHovering = false;
-        private CircleButtonElement[] _circleButtonElements;
         private static readonly int OpeningHash = Animator.StringToHash("Opening");
         private float _softAnimT = 0f;
+        private LocalizationLang _currentLang = LocalizationLang.auto;
+
+        public DefaultTextProvider LocalizeTextProvider { get; private set; }
 
         public void LoadFlag(string flags)
         {
@@ -40,6 +46,8 @@ namespace EWova.Wristband
 
         private void Awake()
         {
+            InitializeLocalization();
+
             foreach (var group in _featureGroups)
             {
                 group.Element.gameObject.SetActive(false);
@@ -51,6 +59,22 @@ namespace EWova.Wristband
                 Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
             });
         }
+
+        private void InitializeLocalization()
+        {
+            try
+            {
+                LocalizeTextProvider = DefaultTextProvider.LoadFromFile("Localization/Wristband");
+                Logger.Info("Localization file loaded successfully.");
+                Localizer.DoLocalizeUpdate(LocalizeTextProvider);
+            }
+            catch (Exception ex)
+            {
+                Logger.Err($"Failed to load localization:");
+                UnityEngine.Debug.LogException(ex);
+            }
+        }
+
         private void Update()
         {
             if (_isUIHovering)
@@ -83,6 +107,14 @@ namespace EWova.Wristband
             else
             {
                 _openingIdleTime = 0f;
+            }
+
+            if (_currentLang != LocalizationLang)
+            {
+                _currentLang = LocalizationLang;
+                LocalizeTextProvider.CurrentSetting = LocalizationLang;
+                Localizer.DoLocalizeUpdate(LocalizeTextProvider);
+                Logger.Info($"Localization language set to {LocalizationLang}");
             }
         }
 

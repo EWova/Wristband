@@ -1,4 +1,4 @@
-using EWova.NetService;
+using Cysharp.Threading.Tasks;
 
 using UnityEngine;
 
@@ -7,17 +7,24 @@ namespace EWova.Wristband
     public class QuitAppBTN : BaseBTN
     {
         [SerializeField] private string m_label = "Close App";
-        public override string Label => m_label;
+        public override string LabelKey => m_label;
         [SerializeField] private string m_description = "Close the app";
-        public override string Description => m_description;
+        public override string DescriptionKey => m_description;
 
-        public override void ProcessClick()
+        protected override UniTask Load(LoadProcess loadProcess)
+        {
+            loadProcess.SetComplete();
+            return UniTask.CompletedTask;
+        }
+
+        protected override UniTask ProcessClick()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.ExitPlaymode();
 #else
             Application.Quit();
 #endif
+            return UniTask.CompletedTask;
         }
     }
 }

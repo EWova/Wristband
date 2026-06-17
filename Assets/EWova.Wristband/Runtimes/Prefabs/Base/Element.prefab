@@ -201,7 +201,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 8}
+  m_AnchoredPosition: {x: 0, y: 12}
   m_SizeDelta: {x: 126, y: 126}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5635190947191478878
@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 630241370251188195}
   - component: {fileID: 9185605384232758149}
   - component: {fileID: 458709658266982887}
+  - component: {fileID: 854025565614937067}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -277,7 +278,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: -8}
-  m_SizeDelta: {x: 240, y: 36}
+  m_SizeDelta: {x: 230, y: 36}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &9185605384232758149
 CanvasRenderer:
@@ -334,8 +335,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 16
@@ -378,6 +379,34 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &854025565614937067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7637614539693429835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eef868ac33698745bc0ee5bf0c85507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: GoToEWova
+  OnUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 458709658266982887}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8367288395397906049
 GameObject:
   m_ObjectHideFlags: 0

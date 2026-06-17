@@ -11,9 +11,6 @@ namespace EWova.Wristband
 {
     public class CircleButtonElement : MonoBehaviour
     {
-        public string Label { get; set; } = "{Label}";
-        public string Description { get; set; } = "{Description}";
-
         public Image LoadReminderFillImage;
         public Button Button;
         public TextMeshProUGUI LabelTMP;
@@ -25,6 +22,11 @@ namespace EWova.Wristband
 
         private bool _isDirty = true;
 
+        public bool Show
+        {
+            get => gameObject.activeSelf;
+            set => gameObject.SetActive(value);
+        }
 
         public bool IsDone
         {
@@ -56,7 +58,6 @@ namespace EWova.Wristband
         {
             Button.interactable = false;
             LoadReminderFillImage.fillAmount = 1.0f;
-            LabelTMP.text = Label;
             Button.onClick.AddListener(ProcessClick);
         }
 
@@ -64,7 +65,6 @@ namespace EWova.Wristband
         {
             if (!_isDirty)
                 return;
-            LabelTMP.text = Label;
             Button.interactable = IsDone;
             if (IsDone)
                 LoadReminderFillImage.fillAmount = 0f;
@@ -88,7 +88,7 @@ namespace EWova.Wristband
             }
             catch (Exception ex)
             {
-                Logger.Error("按鈕點擊事件發生錯誤");
+                Logger.Err("按鈕點擊事件發生錯誤");
                 UnityEngine.Debug.LogException(ex);
             }
         }

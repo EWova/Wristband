@@ -1,4 +1,4 @@
-using TMPro;
+using Cysharp.Threading.Tasks;
 
 using UnityEngine;
 
@@ -7,19 +7,25 @@ namespace EWova.Wristband
     public class GoEWovaBTN : BaseBTN
     {
         [SerializeField] private string m_label = "Switch to EWova";
-        public override string Label => m_label;
+        public override string LabelKey => m_label;
         [SerializeField] private string m_description = "Switch to EWova";
-        public override string Description => m_description;
+        public override string DescriptionKey => m_description;
 
-        public override void ProcessClick()
+        protected override UniTask Load(LoadProcess loadProcess)
         {
-            string url = EWova.GetDeepLink(DeepLinkQueryInclude.Default);
+            loadProcess.SetComplete();
+            return UniTask.CompletedTask;
+        }
+
+        protected override UniTask ProcessClick()
+        {
+            string url = EWovaApp.GetDeepLink(LaunchViaDeepLinkOption.Default);
             Logger.Info($"Opening EWova with URL: {url}");
 
-            if (Application.isEditor)
-                return;
+            if (!Application.isEditor)
+                Application.OpenURL(url);
 
-            Application.OpenURL(url);
+            return UniTask.CompletedTask;
         }
     }
 }

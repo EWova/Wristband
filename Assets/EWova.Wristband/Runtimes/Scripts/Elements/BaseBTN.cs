@@ -1,11 +1,13 @@
+using Cysharp.Threading.Tasks;
+
 using UnityEngine;
 
 namespace EWova.Wristband
 {
     public abstract class BaseBTN : MonoBehaviour
     {
-        public virtual string Label => "{Label}";
-        public virtual string Description => "{Description}";
+        public virtual string LabelKey => "{Label}";
+        public virtual string DescriptionKey => "{Description}";
 
         private CircleButtonElement _circleButtonElement;
         private void OnValidate()
@@ -16,29 +18,80 @@ namespace EWova.Wristband
 
         private void Awake()
         {
-            _circleButtonElement.IsDone = true;
-            _circleButtonElement.Progress = 1f;
-            _circleButtonElement.Label = Label;
-            _circleButtonElement.Description = Description;
-            _circleButtonElement.OnClick += () =>
+            _circleButtonElement.OnClick += ProcessClickInternal;
+        }
+        private LoadProcess _loadProcess;
+        private void Start()
+        {
+            Load();
+        }
+        private void Update()
+        {
+            if (_loadProcess != null)
+            {
+                _circleButtonElement.Progress = _loadProcess.Progress;
+                _circleButtonElement.Button.interactable = !_loadProcess.Failed;
+                _circleButtonElement.IsDone = _loadProcess.IsCompleted;
+
+                if (_loadProcess.IsCompleted)
+                    _loadProcess = null;
+            }
+        }
+
+        protected class LoadProcess
+        {
+            public float Progress;
+            public bool Failed;
+            public bool IsCompleted;
+            public void SetComplete()
+            {
+                Progress = 1f;
+                IsCompleted = true;
+            }
+            public void SetFailed()
+            {
+                Failed = true;
+                IsCompleted = true;
+            }
+        }
+        protected abstract UniTask Load(LoadProcess loadProcess);
+        protected abstract UniTask ProcessClick();
+
+        internal void Load()
+        {
+            UniTask.Void(async () =>
+            {
+                _loadProcess = new();
+                try
+                {
+                    await Load(_loadProcess);
+                }
+                catch (System.Exception ex)
+                {
+                    UnityEngine.Debug.LogException(ex);
+                    _loadProcess.SetFailed();
+                }
+            });
+        }
+        internal void ProcessClickInternal()
+        {
+            UniTask.Void(async () =>
             {
                 try
                 {
-                    Logger.Info($"{Label} button clicked.");
-                    ProcessClick();
+                    Logger.Info($"{LabelKey} button clicked.");
+                    await ProcessClick();
                 }
                 catch (System.Exception ex)
                 {
                     UnityEngine.Debug.LogException(ex);
                 }
-            };
+                finally
+                {
+                    _circleButtonElement.Progress = 1f;
+                    _circleButtonElement.IsDone = true;
+                }
+            });
         }
-        private void Update()
-        {
-            _circleButtonElement.Label = Label;
-            _circleButtonElement.Description = Description;
-        }
-
-        public abstract void ProcessClick();
     }
 }
