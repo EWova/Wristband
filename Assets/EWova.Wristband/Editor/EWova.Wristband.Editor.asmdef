@@ -1,7 +1,10 @@
 {
     "name": "EWova.Wristband.Editor",
     "rootNamespace": "EWova.Wristband.Editor",
-    "references": [],
+    "references": [
+        "EWova.Wristband",
+        "EWova.Core"
+    ],
     "includePlatforms": [
         "Editor"
     ],

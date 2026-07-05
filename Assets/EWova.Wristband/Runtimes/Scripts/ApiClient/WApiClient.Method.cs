@@ -12,6 +12,8 @@ namespace EWova.Wristband
         Unknown,
         // 按鈕與系統行為追蹤
         RecordAppEvent,
+        // 功能旗標
+        GetFeatures,
         // 截圖與分享
         UploadScreenshot,
         ShareActivity,
@@ -32,12 +34,29 @@ namespace EWova.Wristband
         protected UniTask<T> Post<T>(string endpoint, object jsonBody, CancellationToken ct = default)
             => base.Post<T>(endpoint, jsonBody, contentType: WristbandContentType, ct: ct);
 
+        #region 功能旗標 API (Feature Flags)
+
+        public async UniTask<ApiModels.GetFeaturesResponse> GetFeaturesAsync(CancellationToken ct = default)
+        {
+            try
+            {
+                return await Get<ApiModels.GetFeaturesResponse>("/me/wristband/features", ct);
+            }
+            catch (ApiException ex)
+            {
+                throw new ApiWristbandException(WApiAction.GetFeatures, "Failed to get wristband features.", ex);
+            }
+            catch (OperationCanceledException) { throw; }
+        }
+
+        #endregion
+
         #region 截圖與分享 API (Screenshot & Share)
         public async UniTask<ApiModels.UploadScreenshotResponse> UploadScreenshotAsync(ApiModels.UploadScreenshotRequest request, CancellationToken ct = default)
         {
             try
             {
-                return await Post<ApiModels.UploadScreenshotResponse>("/api/v1/me/screenshots", request, ct);
+                return await Post<ApiModels.UploadScreenshotResponse>("/me/screenshots", request, ct);
             }
             catch (ApiException ex)
             {
@@ -50,7 +69,7 @@ namespace EWova.Wristband
         {
             try
             {
-                await Post("/api/v1/me/shares", request, ct);
+                await Post("/me/shares", request, ct);
             }
             catch (ApiException ex)
             {

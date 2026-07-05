@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace EWova.Wristband
@@ -19,8 +17,26 @@ namespace EWova.Wristband
 
         private bool _isDone = false;
         private float _progress = 0f;
+        private bool _isFeatureEnabled = true;
 
         private bool _isDirty = true;
+
+        /// <summary>後端 feature flag 控制的啟用狀態。false 時按鈕灰掉，視覺層另行處理。</summary>
+        public bool IsFeatureEnabled
+        {
+            get => _isFeatureEnabled;
+            set
+            {
+                if (_isFeatureEnabled != value)
+                {
+                    _isFeatureEnabled = value;
+                    _isDirty = true;
+                }
+            }
+        }
+
+        /// <summary>停用原因的 localization key（對應 Wristband.tsv）。</summary>
+        public string DisabledReasonKey { get; set; }
 
         public bool Show
         {
@@ -65,7 +81,7 @@ namespace EWova.Wristband
         {
             if (!_isDirty)
                 return;
-            Button.interactable = IsDone;
+            Button.interactable = IsDone && IsFeatureEnabled;
             if (IsDone)
                 LoadReminderFillImage.fillAmount = 0f;
             else

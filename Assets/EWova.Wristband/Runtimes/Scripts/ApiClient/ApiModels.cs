@@ -19,6 +19,25 @@ namespace EWova.Wristband
 
         #endregion
 
+        #region 功能旗標 (Feature Flags)
+
+        [Serializable]
+        public class FeatureState
+        {
+            public string key;
+            public bool visible;
+            public bool enabled;
+            public string disabledReason; // localization key，對應 Wristband.tsv
+        }
+
+        [Serializable]
+        public class GetFeaturesResponse
+        {
+            public FeatureState[] features;
+        }
+
+        #endregion
+
         #region 截圖與分享 (Screenshot & Share)
 
         [Serializable]

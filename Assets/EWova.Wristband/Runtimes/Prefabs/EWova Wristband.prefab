@@ -84,6 +84,7 @@ MonoBehaviour:
   - Flag: QUIT_APP
     Element: {fileID: 6470707125988750177}
   LocalizationLang: 0
+  LearningPortfolioFrame: {fileID: 912924920666474709}
 --- !u!114 &5002207953831548452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,7 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a58e00c71a81d4d9e9bee9c73ba9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Flag: GO_TO_EWOVA,CAPTURE_TO_EWOVA,SHARE_TO_EWOVA,VIEW_LEARNING_PROFILE,EXPLORE_EWOVA_WEBSITE,QUIT_APP
+  m_fallbackFeatures: 17
+  m_editorOfflineMode: 0
+  m_editorTestFeatures: 23
 --- !u!114 &144879864419239757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,6 +164,7 @@ RectTransform:
   - {fileID: 497020421878962557}
   - {fileID: 1499920394415566912}
   - {fileID: 220742858312266193}
+  - {fileID: 912924920666474709}
   m_Father: {fileID: 7182679250792523155}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -383,6 +387,41 @@ MonoBehaviour:
   HoverScale: 1.1
   PressedScale: 0.9
   smoothSpeed: 15
+--- !u!1 &1284483341163106466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 912924920666474709}
+  m_Layer: 5
+  m_Name: LearningPortfolioFrame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &912924920666474709
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284483341163106466}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6734053010550255021}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2738864011863951813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1334,8 +1373,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54819b9cdaa52fb44ad2d7242084294e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circleButtonElement: {fileID: 8559868981929010600}
   m_label: Capture to EWova
   m_description: Take a screenshot and save it in your EWova account.
+  m_jpgQuality: 85
 --- !u!114 &8559868981929010600 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8478080317801602183, guid: df5f33e5367bdaa43bb86e307d678a30, type: 3}
@@ -1481,6 +1522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b237f4072d34aa4ca2a6aa49dd3ed29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circleButtonElement: {fileID: 7676973790949319512}
   m_label: Explore EWova
   m_description: Visit EWova Website
 --- !u!224 &6986508188790048020 stripped
@@ -1628,6 +1670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c819574ff8c34642ac9b03d338149c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circleButtonElement: {fileID: 6470707125988750177}
   m_label: Quit App
   m_description: Exit the application
 --- !u!224 &6031330397207467309 stripped
@@ -1783,6 +1826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad494a3bd9e202a4ca1994b4e51fdbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circleButtonElement: {fileID: 3644086851094442400}
   m_label: Go to EWova
   m_description: Launch EWova App
 --- !u!1001 &6324289063800158515
@@ -1926,8 +1970,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4671e170c2cf5b0489fa679fa9c61a63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circleButtonElement: {fileID: 2480447947716273588}
   m_label: View Learning Profile
   m_description: View Your Learning Profile
+  m_profileRoot: {fileID: 0}
 --- !u!1001 &7314793044570575174
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2069,5 +2115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852346372df11a24f8e061ed6bb748d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circleButtonElement: {fileID: 1165144387029241281}
   m_label: Share to EWova
   m_description: Share your activity to EWova App
+  m_shareDescription: 
+  m_jpgQuality: 85

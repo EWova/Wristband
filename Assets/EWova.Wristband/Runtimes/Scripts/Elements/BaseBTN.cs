@@ -9,7 +9,12 @@ namespace EWova.Wristband
         public virtual string LabelKey => "{Label}";
         public virtual string DescriptionKey => "{Description}";
 
-        private CircleButtonElement _circleButtonElement;
+        [SerializeField] private CircleButtonElement _circleButtonElement;
+        private Wristband _wristband;
+
+        protected Wristband Wristband => _wristband;
+        protected WApiClient ApiClient => _wristband != null ? _wristband.ApiClient : null;
+
         private void OnValidate()
         {
             if (_circleButtonElement == null)
@@ -18,6 +23,9 @@ namespace EWova.Wristband
 
         private void Awake()
         {
+            if (_circleButtonElement == null)
+                _circleButtonElement = GetComponent<CircleButtonElement>();
+            _wristband = GetComponentInParent<Wristband>();
             _circleButtonElement.OnClick += ProcessClickInternal;
         }
         private LoadProcess _loadProcess;
