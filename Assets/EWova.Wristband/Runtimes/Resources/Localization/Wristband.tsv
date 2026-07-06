@@ -6,5 +6,6 @@ CaptureToEWova	Capture to EWova	截圖儲存到 EWova	截图保存到 EWova	EWov
 ShareToEWova	Share to EWova	分享到 EWova	分享到 EWova	EWovaに共有	EWova에 공유	Chia sẻ lên EWova
 ViewLearningProfile	View Learning Profile	檢視學習歷程	查看学习历程	学習履歴を表示	학습 이력 보기	Xem hồ sơ học tập
 ExploreEWova	Explore EWova	探索 EWova 官方網站	探索 EWova 官方网站	EWova公式サイトを探索	EWova 공식 사이트 탐색	Khám phá trang web EWova
-QuitApp	Quit App	離開本應用程式	离开本应用	アプリを終了	앱 종료	Thoát ứng dụngFEATURE_NOT_AVAILABLE	Currently unavailable	目前不可用	目前不可用	現在利用できません	현재 사용 불가	Hiện không khả dụng
+QuitApp	Quit App	離開本應用程式	离开本应用	アプリを終了	앱 종료	Thoát ứng dụng
+FEATURE_NOT_AVAILABLE	Currently unavailable	目前不可用	目前不可用	現在利用できません	현재 사용 불가	Hiện không khả dụng
 FEATURE_PERMISSION_DENIED	Permission denied	權限不足	权限不足	権限がありません	권한 없음	Không có quyền

@@ -43,7 +43,7 @@ Client calls this once on startup. On failure (any non-2xx), client hides all bu
       "key": "VIEW_LEARNING_PROFILE",
       "visible": true,
       "enabled": false,
-      "disabledReason": "FEATURE_PERMISSION_DENIED"
+      "disabledReason": "FEATURE_NOT_AVAILABLE"
     },
     {
       "key": "EXPLORE_EWOVA_WEBSITE",
