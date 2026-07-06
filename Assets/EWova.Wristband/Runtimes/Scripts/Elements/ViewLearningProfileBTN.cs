@@ -1,11 +1,6 @@
-#if EWOVA_LEARNING_PORTFOLIO
-using EWova.LearningPortfolio;
-#endif
-
 using Cysharp.Threading.Tasks;
 
 using UnityEngine;
-using System.Diagnostics;
 
 namespace EWova.Wristband
 {
@@ -16,27 +11,43 @@ namespace EWova.Wristband
         [SerializeField] private string m_description = "ViewLearningProfile";
         public override string DescriptionKey => m_description;
 
-        [SerializeField] private RectTransform m_profileRoot;
 
-        protected override async UniTask Load(LoadProcess loadProcess)
+        private void OnEnable()
         {
 #if EWOVA_LEARNING_PORTFOLIO
-            if (LearningPortfolio.LearningPortfolio.IsConnected)
-            {
-                loadProcess.SetComplete();
-                return;
-            }
+            LearningPortfolio.LearningPortfolio.OnUserLogin += OnLPUserLogin;
+            LearningPortfolio.LearningPortfolio.OnUserLogout += OnLPUserLogout;
+            SyncState();
+#endif
+        }
 
-            var process = new CheckAvailabilityProcess();
-            await LearningPortfolio.LearningPortfolio.CheckAvailabilityAsync(process, destroyCancellationToken);
+        private void OnDisable()
+        {
+#if EWOVA_LEARNING_PORTFOLIO
+            LearningPortfolio.LearningPortfolio.OnUserLogin -= OnLPUserLogin;
+            LearningPortfolio.LearningPortfolio.OnUserLogout -= OnLPUserLogout;
+#endif
+        }
 
-            if (process.IsSuccess)
-                loadProcess.SetComplete();
-            else
-                loadProcess.SetFailed();
+#if EWOVA_LEARNING_PORTFOLIO
+        private void OnLPUserLogin(LearningPortfolio.LearningPortfolio.UserData _) => SyncState();
+        private void OnLPUserLogout() => SyncState();
+
+        protected override void SyncState()
+        {
+            CircleButtonElement.Show = LearningPortfolio.LearningPortfolio.IsConnected;
+            CircleButtonElement.IsFeatureEnabled = LearningPortfolio.LearningPortfolio.IsConnected;
+        }
+#endif
+
+        protected override UniTask Load(LoadProcess loadProcess)
+        {
+#if EWOVA_LEARNING_PORTFOLIO
+            loadProcess.SetComplete();
+            SyncState();
+            return UniTask.CompletedTask;
 #else
-            loadProcess.SetFailed();
-            await UniTask.CompletedTask;
+            return UniTask.CompletedTask;
 #endif
         }
 
@@ -48,6 +59,7 @@ namespace EWova.Wristband
                 Logger.Warn("LearningPortfolio is not connected. Cannot view learning profile.");
                 return UniTask.CompletedTask;
             }
+            SyncState();
 
             LearningPortfolio.LearningPortfolio.CreateUserProjectRecordShower(Wristband.LearningPortfolioFrame);
 #endif

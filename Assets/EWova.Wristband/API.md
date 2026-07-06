@@ -30,8 +30,32 @@ Client calls this once on startup. On failure (any non-2xx), client hides all bu
     {
       "key": "CAPTURE_TO_EWOVA",
       "visible": true,
+      "enabled": true,
+      "disabledReason": null
+    },
+    {
+      "key": "SHARE_TO_EWOVA",
+      "visible": true,
+      "enabled": true,
+      "disabledReason": null
+    },
+    {
+      "key": "VIEW_LEARNING_PROFILE",
+      "visible": true,
       "enabled": false,
-      "disabledReason": "FEATURE_UPGRADE_REQUIRED"
+      "disabledReason": "FEATURE_PERMISSION_DENIED"
+    },
+    {
+      "key": "EXPLORE_EWOVA_WEBSITE",
+      "visible": true,
+      "enabled": true,
+      "disabledReason": null
+    },
+    {
+      "key": "QUIT_APP",
+      "visible": true,
+      "enabled": true,
+      "disabledReason": null
     }
   ]
 }

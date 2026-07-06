@@ -12,6 +12,7 @@ namespace EWova.Wristband
         [SerializeField] private CircleButtonElement _circleButtonElement;
         private Wristband _wristband;
 
+        protected CircleButtonElement CircleButtonElement => _circleButtonElement;
         protected Wristband Wristband => _wristband;
         protected WApiClient ApiClient => _wristband != null ? _wristband.ApiClient : null;
 
@@ -27,12 +28,20 @@ namespace EWova.Wristband
                 _circleButtonElement = GetComponent<CircleButtonElement>();
             _wristband = GetComponentInParent<Wristband>();
             _circleButtonElement.OnClick += ProcessClickInternal;
+            _wristband.OnButtonInvoke += SyncStateInternal;
         }
-        private LoadProcess _loadProcess;
         private void Start()
         {
             Load();
         }
+        private void OnDestroy()
+        {
+            if (_circleButtonElement != null)
+                _circleButtonElement.OnClick -= ProcessClickInternal;
+            if (_wristband != null)
+                _wristband.OnButtonInvoke -= SyncStateInternal;
+        }
+        private LoadProcess _loadProcess;
         private void Update()
         {
             if (_loadProcess != null)
@@ -64,6 +73,7 @@ namespace EWova.Wristband
         }
         protected abstract UniTask Load(LoadProcess loadProcess);
         protected abstract UniTask ProcessClick();
+        protected virtual void SyncState() { }
 
         internal void Load()
         {
@@ -80,6 +90,10 @@ namespace EWova.Wristband
                     _loadProcess.SetFailed();
                 }
             });
+        }
+        internal void SyncStateInternal()
+        {
+            SyncState();
         }
         internal void ProcessClickInternal()
         {

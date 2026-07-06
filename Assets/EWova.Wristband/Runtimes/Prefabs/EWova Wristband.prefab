@@ -114,7 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_fallbackFeatures: 17
   m_editorOfflineMode: 0
-  m_editorTestFeatures: 23
+  m_editorTestFeatures: -1
 --- !u!114 &144879864419239757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1973,7 +1973,6 @@ MonoBehaviour:
   _circleButtonElement: {fileID: 2480447947716273588}
   m_label: View Learning Profile
   m_description: View Your Learning Profile
-  m_profileRoot: {fileID: 0}
 --- !u!1001 &7314793044570575174
 PrefabInstance:
   m_ObjectHideFlags: 0

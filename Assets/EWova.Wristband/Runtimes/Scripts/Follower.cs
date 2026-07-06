@@ -20,23 +20,40 @@ namespace EWova.Wristband
                 }
             }
         }
-        public Transform Pivot;
         public Transform LookAt;
         public float smoothTime = 0.2f;
         public bool followRotation = false;
         public Vector3 rotationPivotOffset = Vector3.zero;
 
-        private Vector3 velocity;
+        private Transform _pivot;
+        private Vector3 _velocity;
         private Transform _transform;
+
+        private void Start()
+        {
+            if (transform.parent != null)
+            {
+                if (_pivot == null)
+                {
+                    GameObject pivotObject = new GameObject("FollowerPivot");
+                    pivotObject.transform.position = transform.position;
+                    pivotObject.transform.rotation = transform.rotation;
+
+                    _pivot = pivotObject.transform;
+                }
+
+                transform.SetParent(null, false);
+            }
+        }
 
         private void LateUpdate()
         {
-            if (Pivot)
+            if (_pivot != null)
             {
                 transform.position = Vector3.SmoothDamp(
                     transform.position,
-                    Pivot.position,
-                    ref velocity,
+                    _pivot.position,
+                    ref _velocity,
                     smoothTime
                 );
             }
@@ -51,19 +68,5 @@ namespace EWova.Wristband
                 }
             }
         }
-
-        //private void OnDrawGizmos()
-        //{
-        //    if (LookAt)
-        //    {
-        //        Gizmos.color = Color.blue;
-        //        Gizmos.DrawSphere(transform.position, 0.1f);
-
-        //        // draw offset
-        //        Gizmos.color = Color.cyan;
-        //        Vector3 offsetPos = transform.position + transform.rotation * rotationPivotOffset;
-        //        Gizmos.DrawSphere(offsetPos, 0.1f);
-        //    }
-        //}
     }
 }

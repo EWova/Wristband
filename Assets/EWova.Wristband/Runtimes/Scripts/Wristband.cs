@@ -33,6 +33,7 @@ namespace EWova.Wristband
         private static readonly int OpeningHash = Animator.StringToHash("Opening");
         private float _softAnimT = 0f;
         private LocalizationLang _currentLang = LocalizationLang.auto;
+        internal Action OnButtonInvoke;
 
         public WApiClient ApiClient { get; private set; }
         public string LastScreenshotUrl { get; set; }
@@ -103,6 +104,7 @@ namespace EWova.Wristband
             MainMenuBTN.onClick.AddListener(() =>
             {
                 _isMenuOpen = !_isMenuOpen;
+                OnButtonInvoke?.Invoke();
                 Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
             });
         }
