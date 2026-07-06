@@ -40,7 +40,8 @@ namespace EWova.Wristband
                 if (Wristband != null)
                     Wristband.LastScreenshotUrl = response.imageUrl;
 
-                Logger.Info($"Screenshot uploaded: {response.imageUrl}");
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Screenshot uploaded: {response.imageUrl}");
             }
             finally
             {

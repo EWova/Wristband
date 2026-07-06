@@ -20,7 +20,8 @@ namespace EWova.Wristband
         protected override UniTask ProcessClick()
         {
             string url = EWovaApp.GetDeepLink(LaunchViaDeepLinkOption.Default);
-            Logger.Info($"Opening EWova with URL: {url}");
+            if (Logger.InfoEnabled)
+                Logger.Info($"Opening EWova with URL: {url}");
 
             if (!Application.isEditor)
                 Application.OpenURL(url);

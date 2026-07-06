@@ -47,7 +47,8 @@ namespace EWova.Wristband
 
             if (loadObj == null)
             {
-                Logger.Err($"Localization file not found at path: {filePath}");
+                if (Logger.ErrorEnabled)
+                    Logger.Err($"Localization file not found at path: {filePath}");
                 return null;
             }
 
@@ -55,7 +56,8 @@ namespace EWova.Wristband
 
             if (string.IsNullOrEmpty(content))
             {
-                Logger.Err($"Failed to load localization file at path: {filePath}");
+                if (Logger.ErrorEnabled)
+                    Logger.Err($"Failed to load localization file at path: {filePath}");
                 return null;
             }
             DefaultTextProvider provider = new DefaultTextProvider();
@@ -151,7 +153,8 @@ namespace EWova.Wristband
                 "vi" => LocalizationLang.vi,
                 _ => LocalizationLang.en
             };
-            Logger.Info($"System language detected: {currentCulture.Name}, using localization: {output}");
+            if (Logger.InfoEnabled)
+                Logger.Info($"System language detected: {currentCulture.Name}, using localization: {output}");
             return output;
         }
 

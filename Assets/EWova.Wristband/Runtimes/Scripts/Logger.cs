@@ -15,6 +15,10 @@ namespace EWova.Wristband
             set => _logger.PrintLevel = value;
         }
 
+        internal static bool InfoEnabled => _logger.InfoEnabled;
+        internal static bool WarnEnabled => _logger.WarnEnabled;
+        internal static bool ErrorEnabled => _logger.ErrorEnabled;
+
         [HideInCallstack]
         internal static void Info(string message)
         {

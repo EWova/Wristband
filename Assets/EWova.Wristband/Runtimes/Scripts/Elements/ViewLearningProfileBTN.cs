@@ -56,7 +56,8 @@ namespace EWova.Wristband
 #if EWOVA_LEARNING_PORTFOLIO
             if (!LearningPortfolio.LearningPortfolio.IsConnected)
             {
-                Logger.Warn("LearningPortfolio is not connected. Cannot view learning profile.");
+                if (Logger.WarnEnabled)
+                    Logger.Warn("LearningPortfolio is not connected. Cannot view learning profile.");
                 return UniTask.CompletedTask;
             }
             SyncState();

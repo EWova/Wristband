@@ -67,7 +67,8 @@ namespace EWova.Wristband
 
                 if (!WristbandCapabilities.Supported.Contains(state.key))
                 {
-                    Logger.Info($"Feature '{state.key}' skipped: not supported by this installation.");
+                    if (Logger.InfoEnabled)
+                        Logger.Info($"Feature '{state.key}' skipped: not supported by this installation.");
                     continue;
                 }
 
@@ -76,7 +77,8 @@ namespace EWova.Wristband
 
                 if (group == null)
                 {
-                    Logger.Warn($"Feature key '{state.key}' not found in FeatureGroups.");
+                    if (Logger.WarnEnabled)
+                        Logger.Warn($"Feature key '{state.key}' not found in FeatureGroups.");
                     continue;
                 }
 
@@ -86,7 +88,8 @@ namespace EWova.Wristband
                 {
                     group.Element.IsFeatureEnabled = state.enabled;
                     group.Element.DisabledReasonKey = state.disabledReason;
-                    Logger.Info($"Feature '{state.key}': visible={state.visible}, enabled={state.enabled}, reason='{state.disabledReason}'");
+                    if (Logger.InfoEnabled)
+                        Logger.Info($"Feature '{state.key}': visible={state.visible}, enabled={state.enabled}, reason='{state.disabledReason}'");
                 }
             }
         }
@@ -105,7 +108,8 @@ namespace EWova.Wristband
             {
                 _isMenuOpen = !_isMenuOpen;
                 OnButtonInvoke?.Invoke();
-                Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
             });
         }
 
@@ -114,12 +118,14 @@ namespace EWova.Wristband
             try
             {
                 LocalizeTextProvider = DefaultTextProvider.LoadFromFile("Localization/Wristband");
-                Logger.Info("Localization file loaded successfully.");
+                if (Logger.InfoEnabled)
+                    Logger.Info("Localization file loaded successfully.");
                 Localizer.DoLocalizeUpdate(LocalizeTextProvider);
             }
             catch (Exception ex)
             {
-                Logger.Err($"Failed to load localization:");
+                if (Logger.ErrorEnabled)
+                    Logger.Err($"Failed to load localization:");
                 UnityEngine.Debug.LogException(ex);
             }
         }
@@ -148,7 +154,8 @@ namespace EWova.Wristband
 
                 if (_openingIdleTime > 5f)
                 {
-                    Logger.Info("Idle time exceeded 5 seconds. Closing menu.");
+                    if (Logger.InfoEnabled)
+                        Logger.Info("Idle time exceeded 5 seconds. Closing menu.");
                     _isMenuOpen = false;
                     _openingIdleTime = 0f;
                 }
@@ -163,7 +170,8 @@ namespace EWova.Wristband
                 _currentLang = LocalizationLang;
                 LocalizeTextProvider.CurrentSetting = LocalizationLang;
                 Localizer.DoLocalizeUpdate(LocalizeTextProvider);
-                Logger.Info($"Localization language set to {LocalizationLang}");
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Localization language set to {LocalizationLang}");
             }
         }
 

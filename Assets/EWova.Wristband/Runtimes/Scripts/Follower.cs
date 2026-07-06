@@ -35,10 +35,9 @@ namespace EWova.Wristband
             {
                 if (_pivot == null)
                 {
-                    GameObject pivotObject = new GameObject("FollowerPivot");
-                    pivotObject.transform.position = transform.position;
-                    pivotObject.transform.rotation = transform.rotation;
-
+                    GameObject pivotObject = new("FollowerPivot");
+                    pivotObject.transform.SetPositionAndRotation(transform.position, transform.rotation);
+                    pivotObject.transform.SetParent(transform.parent, true);
                     _pivot = pivotObject.transform;
                 }
 
@@ -58,8 +57,14 @@ namespace EWova.Wristband
                 );
             }
 
-            if (LookAt && followRotation)
+            if (followRotation)
             {
+                if (LookAt == null)
+                    LookAt = Camera.main.transform;
+
+                if (LookAt == null)
+                    return;
+
                 Vector3 targetDirection = LookAt.position - (transform.position + transform.rotation * rotationPivotOffset);
                 if (targetDirection.sqrMagnitude > 0.001f)
                 {

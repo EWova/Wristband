@@ -60,7 +60,8 @@ namespace EWova.Wristband
             if (Wristband != null)
                 Wristband.LastScreenshotUrl = null;
 
-            Logger.Info("Activity shared successfully.");
+            if (Logger.InfoEnabled)
+                Logger.Info("Activity shared successfully.");
         }
     }
 }

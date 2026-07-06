@@ -94,7 +94,8 @@ namespace EWova.Wristband
         {
             if (!IsDone)
             {
-                Logger.Warn("按鈕功能載入中，尚無法點擊");
+                if (Logger.WarnEnabled)
+                    Logger.Warn("按鈕功能載入中，尚無法點擊");
                 return;
             }
 
@@ -104,7 +105,8 @@ namespace EWova.Wristband
             }
             catch (Exception ex)
             {
-                Logger.Err("按鈕點擊事件發生錯誤");
+                if (Logger.ErrorEnabled)
+                    Logger.Err("按鈕點擊事件發生錯誤");
                 UnityEngine.Debug.LogException(ex);
             }
         }

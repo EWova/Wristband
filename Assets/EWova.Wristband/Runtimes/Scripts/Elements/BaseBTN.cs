@@ -101,7 +101,8 @@ namespace EWova.Wristband
             {
                 try
                 {
-                    Logger.Info($"{LabelKey} button clicked.");
+                    if (Logger.InfoEnabled)
+                        Logger.Info($"{LabelKey} button clicked.");
                     await ProcessClick();
                 }
                 catch (System.Exception ex)

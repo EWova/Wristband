@@ -10,12 +10,12 @@ namespace EWova.Wristband
     [Flags]
     public enum WristbandFeatureFlags
     {
-        None            = 0,
-        GoToEWova       = 1 << 0,
-        CaptureToEWova  = 1 << 1,
-        ShareToEWova    = 1 << 2,
-        ExploreWebsite  = 1 << 3,
-        QuitApp         = 1 << 4,
+        None = 0,
+        GoToEWova = 1 << 0,
+        CaptureToEWova = 1 << 1,
+        ShareToEWova = 1 << 2,
+        ExploreWebsite = 1 << 3,
+        QuitApp = 1 << 4,
 #if EWOVA_LEARNING_PORTFOLIO
         LearningProfile = 1 << 5,
 #endif
@@ -34,6 +34,7 @@ namespace EWova.Wristband
 
         private void Start()
         {
+            Logger.PrintLevel = LogLevel.Warn | LogLevel.Error;
             FetchFeaturesAsync().Forget();
         }
 
@@ -44,7 +45,8 @@ namespace EWova.Wristband
 #if UNITY_EDITOR
             if (m_editorOfflineMode)
             {
-                Logger.Info("[Editor] Offline mode enabled. Using editor test features.");
+                if (Logger.InfoEnabled)
+                    Logger.Info("[Editor] Offline mode enabled. Using editor test features.");
                 wristband.LoadFeatures(ToFeatureStates(m_editorTestFeatures));
                 return;
             }
@@ -58,7 +60,8 @@ namespace EWova.Wristband
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                Logger.Err("Failed to fetch wristband features. Falling back to default features.");
+                if (Logger.ErrorEnabled)
+                    Logger.Err("Failed to fetch wristband features. Falling back to default features.");
                 Debug.LogException(ex);
                 wristband.LoadFeatures(ToFeatureStates(m_fallbackFeatures));
             }
@@ -83,7 +86,7 @@ namespace EWova.Wristband
             {
                 result.Add(new ApiModels.FeatureState
                 {
-                    key     = kv.Value,
+                    key = kv.Value,
                     visible = flags.HasFlag(kv.Key),
                     enabled = flags.HasFlag(kv.Key),
                 });
