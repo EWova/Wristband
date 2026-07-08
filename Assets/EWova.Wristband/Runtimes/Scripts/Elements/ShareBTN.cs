@@ -14,15 +14,54 @@ namespace EWova.Wristband
         [SerializeField] private string m_shareDescription = "";
         [SerializeField, Range(1, 100)] private int m_jpgQuality = 85;
 
+        private void OnEnable()
+        {
+#if EWOVA_LEARNING_PORTFOLIO
+            LearningPortfolio.LearningPortfolio.OnUserLogin += OnLPUserLogin;
+            LearningPortfolio.LearningPortfolio.OnUserLogout += OnLPUserLogout;
+            SyncState();
+#endif
+        }
+
+        private void OnDisable()
+        {
+#if EWOVA_LEARNING_PORTFOLIO
+            LearningPortfolio.LearningPortfolio.OnUserLogin -= OnLPUserLogin;
+            LearningPortfolio.LearningPortfolio.OnUserLogout -= OnLPUserLogout;
+#endif
+        }
+
+#if EWOVA_LEARNING_PORTFOLIO
+        private void OnLPUserLogin(LearningPortfolio.LearningPortfolio.UserData _) => SyncState();
+        private void OnLPUserLogout() => SyncState();
+
+        protected override void SyncState()
+        {
+            CircleButtonElement.Show = LearningPortfolio.LearningPortfolio.IsConnected;
+            CircleButtonElement.IsFeatureEnabled = LearningPortfolio.LearningPortfolio.IsConnected;
+        }
+#endif
+
         protected override UniTask Load(LoadProcess loadProcess)
         {
             loadProcess.SetComplete();
+#if EWOVA_LEARNING_PORTFOLIO
+            SyncState();
+#endif
             return UniTask.CompletedTask;
         }
 
         protected override async UniTask ProcessClick()
         {
-            string imageUrl = Wristband?.LastScreenshotUrl;
+#if EWOVA_LEARNING_PORTFOLIO
+            if (!LearningPortfolio.LearningPortfolio.IsConnected)
+            {
+                if (Logger.WarnEnabled)
+                    Logger.Warn("LearningPortfolio is not connected. Cannot share activity.");
+                return;
+            }
+#endif
+            string imageUrl = Wristband != null ? Wristband.LastScreenshotUrl : null;
 
             // If no cached screenshot, capture and upload one now
             if (string.IsNullOrEmpty(imageUrl))

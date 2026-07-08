@@ -24,12 +24,11 @@ namespace EWova.Wristband
     [RequireComponent(typeof(Wristband))]
     public class Setup : MonoBehaviour
     {
-        [SerializeField]
-        private WristbandFeatureFlags m_fallbackFeatures = WristbandFeatureFlags.GoToEWova | WristbandFeatureFlags.QuitApp;
+        private WristbandFeatureFlags m_fallbackFeatures = WristbandFeatureFlags.GoToEWova | WristbandFeatureFlags.ExploreWebsite | WristbandFeatureFlags.QuitApp;
 
 #if UNITY_EDITOR
         [SerializeField] private bool m_editorOfflineMode = false;
-        [SerializeField] private WristbandFeatureFlags m_editorTestFeatures = WristbandFeatureFlags.GoToEWova | WristbandFeatureFlags.CaptureToEWova | WristbandFeatureFlags.ShareToEWova | WristbandFeatureFlags.QuitApp;
+        [SerializeField] private WristbandFeatureFlags m_editorTestFeatures = WristbandFeatureFlags.GoToEWova | WristbandFeatureFlags.CaptureToEWova | WristbandFeatureFlags.ShareToEWova | WristbandFeatureFlags.ExploreWebsite | WristbandFeatureFlags.QuitApp;
 #endif
 
         private void Start()

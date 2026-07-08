@@ -1,5 +1,4 @@
 using EWova.Networking;
-using EWova.Auth;
 using System.Collections.Generic;
 
 namespace EWova.Wristband
@@ -25,7 +24,8 @@ namespace EWova.Wristband
         }
 
         public WApiClient(EWova.Logger logger = null)
-            : base(EwovaAuthManager.Instance, WServiceUrl, logger)
+            // 這邊使用學習歷程 Auth
+            : base(LearningPortfolio.LearningPortfolio.EWovaAuth, WServiceUrl, logger)
         {
             //AdditionalHeaders["x-api-key"] = apiSettings.APIKey;
         }

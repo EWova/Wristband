@@ -1,5 +1,14 @@
 # EWova Wristband API Specification
 
+## Changelog since last handoff
+
+No endpoint, request, or response schema changed — `/me/wristband/features`, `/me/screenshots`, `/me/shares` and all field names/types are identical to what you already have. Two behavioral things changed client-side that affect how you should reason about the `features` response:
+
+1. **`CAPTURE_TO_EWOVA`, `SHARE_TO_EWOVA`, `VIEW_LEARNING_PROFILE` now require the Learning Portfolio SDK.** The client will hide these three keys regardless of what you send if the host app doesn't have `com.ewova.learningportfoliosdk` installed at `>= 2026.6.0`, and will further hide/disable them live if the user is logged out of Learning Portfolio — independent of your `visible`/`enabled` values. Treat your flags for these three as "does this account have entitlement," not "is this currently showable" — the client owns the live on/off toggle now. `GO_TO_EWOVA`, `EXPLORE_EWOVA_WEBSITE`, `QUIT_APP` have no such dependency and are unaffected.
+2. **Fallback-on-failure corrected.** This doc previously said "on failure, client hides all buttons" — that was never accurate to the shipped behavior and is now fixed below: on a failed fetch the client shows `GO_TO_EWOVA`, `EXPLORE_EWOVA_WEBSITE`, `QUIT_APP` (visible + enabled), not an empty menu. No backend action needed, just don't rely on the old wording if you read it from an earlier copy of this file.
+
+Nothing here requires a backend code change — it's informational so your flag semantics for the three LP-gated keys match what the client actually does.
+
 ## Context
 This API is consumed by a Unity XR wristband SDK (`com.ewova.wristband`).
 The client authenticates via Bearer token. All requests carry `Authorization` and `X-Unity-Sdk` headers automatically.
@@ -13,7 +22,7 @@ The client authenticates via Bearer token. All requests carry `Authorization` an
 
 ### 1. GET /me/wristband/features
 Returns which wristband buttons are visible/enabled for the current user, based on their role.
-Client calls this once on startup. On failure (any non-2xx), client hides all buttons.
+Client calls this once on startup. On failure (any non-2xx), client falls back to a fixed default: `GO_TO_EWOVA`, `EXPLORE_EWOVA_WEBSITE`, `QUIT_APP` visible+enabled, everything else hidden.
 
 **Request:** no body
 
@@ -72,9 +81,9 @@ disabledReason  string   optional  — localization key shown to user when enabl
 **Valid `key` values**
 ```
 GO_TO_EWOVA           deep-links to EWova app
-CAPTURE_TO_EWOVA      captures and uploads a screenshot
-SHARE_TO_EWOVA        shares an activity post
-VIEW_LEARNING_PROFILE opens learning profile (only active when client has com.ewova.learningportfoliosdk)
+CAPTURE_TO_EWOVA      captures and uploads a screenshot          — requires com.ewova.learningportfoliosdk >= 2026.6.0 + user logged into Learning Portfolio (client-enforced, see Changelog)
+SHARE_TO_EWOVA        shares an activity post                    — same Learning Portfolio requirement as above
+VIEW_LEARNING_PROFILE opens learning profile                     — same Learning Portfolio requirement as above
 EXPLORE_EWOVA_WEBSITE opens EWova website
 QUIT_APP              quits the current XR app
 ```
