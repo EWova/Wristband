@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 
+using EWova.LearningPortfolio;
+
 using UnityEngine;
 
 namespace EWova.Wristband
@@ -35,8 +37,9 @@ namespace EWova.Wristband
 
         protected override void SyncState()
         {
-            CircleButtonElement.Show = LearningPortfolio.LearningPortfolio.IsConnected;
-            CircleButtonElement.IsFeatureEnabled = LearningPortfolio.LearningPortfolio.IsConnected;
+            bool isConnected = LearningPortfolio.LearningPortfolio.IsConnected;
+            CircleButtonElement.Show = true;
+            CircleButtonElement.DisabledReasonKey = isConnected ? null : "FEATURE_NOT_AVAILABLE";
         }
 #endif
 
@@ -51,20 +54,37 @@ namespace EWova.Wristband
 #endif
         }
 
-        protected override UniTask ProcessClick()
+        protected override async UniTask ProcessClick()
         {
 #if EWOVA_LEARNING_PORTFOLIO
             if (!LearningPortfolio.LearningPortfolio.IsConnected)
             {
-                if (Logger.WarnEnabled)
-                    Logger.Warn("LearningPortfolio is not connected. Cannot view learning profile.");
-                return UniTask.CompletedTask;
+                bool ok = await Wristband.AlertUI.OpenAsync(new AlertUI.AlertData
+                {
+                    Message = Wristband.LocalizeTextProvider.GetLocalizedString("LearningPortfolioNotConnected"),
+                    SubmitBTNMessage = Wristband.LocalizeTextProvider.GetLocalizedString("Confirm"),
+                    Submit = () => { }
+                });
+
+                if (!ok)
+                    return;
+
+                var process = new ConnectProcess();
+                await LearningPortfolio.LearningPortfolio.ConnectAsync(process, this.destroyCancellationToken);
+
+                if (!process.IsSuccess)
+                {
+                    Debug.LogError($"Login failed: {process.ClientErrorMessage} {process.ServerErrorMessage}");
+                    return;
+                }
+
+                Debug.Log("Login successful");
             }
+            await UniTask.NextFrame();
             SyncState();
 
             LearningPortfolio.LearningPortfolio.CreateUserProjectRecordShower(Wristband.LearningPortfolioFrame);
 #endif
-            return UniTask.CompletedTask;
         }
     }
 }

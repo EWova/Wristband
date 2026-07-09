@@ -1,11 +1,16 @@
 Key	en	zh-Hant	zh	ja	ko	vi
+Confirm	Confirm	確認	确认	確認	확인	Xác nhận
 EWova	EWova	EWova	EWova	EWova	EWova	EWova
 EWova_Name	EWova	教育元宇宙	教育元宇宙	教育メタバース	교육 메타버스	Thế giới ảo giáo dục
 GoToEWova	Go to EWova	穿梭到 EWova	穿梭到 EWova	EWovaへ移動	EWova로 이동	Đi đến EWova
+GoToEWovaConfirm	Are you sure you want to switch to EWova?\nThis will exit this application.	確定要切換到 EWova 嗎？\n這將會退出此應用程式。	确定要切换到 EWova 吗？\n这将会退出此应用程序。	EWovaに切り替えてもよろしいですか？\nこのアプリケーションは終了します。	EWova로 전환하시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn chuyển sang EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
 CaptureToEWova	Capture to EWova	截圖儲存到 EWova	截图保存到 EWova	EWovaにキャプチャ	EWova로 캡처	Chụp màn hình lưu vào EWova
 ShareToEWova	Share to EWova	分享到 EWova	分享到 EWova	EWovaに共有	EWova에 공유	Chia sẻ lên EWova
 ViewLearningProfile	View Learning Profile	檢視學習歷程	查看学习历程	学習履歴を表示	학습 이력 보기	Xem hồ sơ học tập
 ExploreEWova	Explore EWova	探索 EWova 官方網站	探索 EWova 官方网站	EWova公式サイトを探索	EWova 공식 사이트 탐색	Khám phá trang web EWova
+ExploreEWovaConfirm	Are you sure you want to explore the EWova website?\nThis will leave this application.	確定要探索 EWova 官方網站嗎？\n這將會跳離此應用程式。	确定要探索 EWova 官方网站吗？\n这将会跳离此应用程序。	EWova公式サイトを探索してもよろしいですか？\nこのアプリケーションから離れます。	EWova 공식 사이트를 탐색하시겠습니까?\n이 애플리케이션에서 벗어납니다.	Bạn có chắc chắn muốn khám phá trang web EWova không?\nThao tác này sẽ chuyển ra khỏi ứng dụng này.
 QuitApp	Quit App	離開本應用程式	离开本应用	アプリを終了	앱 종료	Thoát ứng dụng
+QuitAppConfirm	Are you sure you want to quit the app?	確定要離開本應用程式嗎？	确定要离开本应用吗？	アプリを終了してもよろしいですか？	앱을 종료하시겠습니까?	Bạn có chắc chắn muốn thoát ứng dụng không?
 FEATURE_NOT_AVAILABLE	Currently unavailable	目前不可用	目前不可用	現在利用できません	현재 사용 불가	Hiện không khả dụng
 FEATURE_PERMISSION_DENIED	Permission denied	權限不足	权限不足	権限がありません	권한 없음	Không có quyền
+LearningPortfolioNotConnected	Learning Portfolio is not connected\nDo you want to log in?	學習歷程尚未登入\n要前往登入嗎？	学习历程尚未登录\n要前往登录吗？	学習履歴が未ログインです\nログインしますか？	학습 이력이 로그인되어 있지 않습니다\n로그인하시겠습니까?	Hồ sơ học tập chưa đăng nhập\nBạn có muốn đăng nhập không?

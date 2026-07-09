@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 
-using UnityEngine;
-
 namespace EWova.Localization
 {
     public static class TextProvider

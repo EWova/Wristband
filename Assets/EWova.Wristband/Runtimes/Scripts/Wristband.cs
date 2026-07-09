@@ -27,6 +27,7 @@ namespace EWova.Wristband
         public RectTransform LearningPortfolioFrame;
 
         private bool _isMenuOpen = false;
+        private bool t_isMenuOpen = false;
         private float _openingIdleTime = 0f;
         private float _animT = 0;
         private bool _isUIHovering = false;
@@ -34,6 +35,7 @@ namespace EWova.Wristband
         private float _softAnimT = 0f;
         private LocalizationLang _currentLang = LocalizationLang.auto;
         internal Action OnButtonInvoke;
+        [SerializeField] internal AlertUI AlertUI;
 
         public WApiClient ApiClient { get; private set; }
         public string LastScreenshotUrl { get; set; }
@@ -112,7 +114,6 @@ namespace EWova.Wristband
                     Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
             });
         }
-
         private void InitializeLocalization()
         {
             try
@@ -129,7 +130,10 @@ namespace EWova.Wristband
                 UnityEngine.Debug.LogException(ex);
             }
         }
-
+        private void Start()
+        {
+            AlertUI.Close();
+        }
         private void Update()
         {
             if (_isUIHovering)
@@ -150,6 +154,11 @@ namespace EWova.Wristband
 
             if (_isMenuOpen)
             {
+                if (!t_isMenuOpen)
+                {
+                    t_isMenuOpen = true;
+                }
+
                 _openingIdleTime += Time.deltaTime;
 
                 if (_openingIdleTime > 5f)
@@ -162,6 +171,12 @@ namespace EWova.Wristband
             }
             else
             {
+                if (t_isMenuOpen)
+                {
+                    AlertUI.Close();
+                    t_isMenuOpen = false;
+                }
+
                 _openingIdleTime = 0f;
             }
 
@@ -174,7 +189,6 @@ namespace EWova.Wristband
                     Logger.Info($"Localization language set to {LocalizationLang}");
             }
         }
-
         private void OnDestroy()
         {
             ApiClient?.Dispose();

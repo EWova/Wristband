@@ -81,6 +81,7 @@ namespace EWova.Wristband
         {
             if (!_isDirty)
                 return;
+
             Button.interactable = IsDone && IsFeatureEnabled;
             if (IsDone)
                 LoadReminderFillImage.fillAmount = 0f;

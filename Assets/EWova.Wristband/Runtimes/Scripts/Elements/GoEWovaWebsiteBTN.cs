@@ -15,10 +15,21 @@ namespace EWova.Wristband
             loadProcess.SetComplete();
             return UniTask.CompletedTask;
         }
-        protected override UniTask ProcessClick()
+        protected override async UniTask ProcessClick()
         {
+            string message = Wristband.LocalizeTextProvider.GetLocalizedString("ExploreEWovaConfirm");
+            string submitLabel = Wristband.LocalizeTextProvider.GetLocalizedString("Confirm");
+            bool confirmed = await Wristband.AlertUI.OpenAsync(new AlertUI.AlertData
+            {
+                Message = message,
+                SubmitBTNMessage = submitLabel,
+                Submit = () => { }
+            });
+
+            if (!confirmed)
+                return;
+
             Application.OpenURL("https://ewova.com/");
-            return UniTask.CompletedTask;
         }
     }
 }

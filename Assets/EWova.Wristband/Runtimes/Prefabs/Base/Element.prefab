@@ -580,11 +580,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 0.69803923}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 0.2}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.2784314}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.9019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -598,7 +598,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 6062503023924684545}
   m_OnClick:
     m_PersistentCalls:
@@ -615,7 +615,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 685ab7e098cab70428f646e422ffa00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 9211893075960363723}
+  TransTarget: {fileID: 847085819153215051}
+  Selectable: {fileID: 3375468083444442406}
   NormalScale: 1
   HoverScale: 1.1
   PressedScale: 0.9
