@@ -56,11 +56,11 @@ namespace EWova.Wristband
         {
             try
             {
-                return await Send<ApiModels.FeatureResponse>(RequestTask.GET(
-                    backendUrlOrAbsoluteUrl: "http://127.0.0.1:5500/test.json",
-                    isAbsoluteUrl: true,
-                    throwApiExceptionFor4xxResponses: false,
-                    ct: ct));
+                //return await Send<ApiModels.FeatureResponse>(RequestTask.GET(
+                //    backendUrlOrAbsoluteUrl: "http://127.0.0.1:5500/test.json",
+                //    isAbsoluteUrl: true,
+                //    throwApiExceptionFor4xxResponses: false,
+                //    ct: ct));
 
                 return await Get<ApiModels.FeatureResponse>("api/v1/me/wristband/features", ct);
             }

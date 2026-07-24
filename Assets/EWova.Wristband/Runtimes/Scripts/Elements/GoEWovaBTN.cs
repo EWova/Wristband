@@ -10,6 +10,7 @@ namespace EWova.Wristband
         {
             public Sprite Sprite;
             public abstract string LabelKey { get; }
+            public abstract string MainSubmitMessageKey { get; }
             public abstract string SubSubmitMessageKey { get; }
             public abstract string ConfirmationMessageKey { get; }
             public abstract EWovaDeepLinkLaunchOption EWovaDeepLinkLaunchOption { get; }
@@ -18,7 +19,8 @@ namespace EWova.Wristband
         private class GoToEWovaState : IState
         {
             public override string LabelKey => "GoToEWova";
-            public override string ConfirmationMessageKey => "GoToEWovaConfirm";
+            public override string ConfirmationMessageKey => "GoToEWovaConfirmation";
+            public override string MainSubmitMessageKey => "Confirm";
             public override string SubSubmitMessageKey => null;
             public override EWovaDeepLinkLaunchOption EWovaDeepLinkLaunchOption => EWovaDeepLinkLaunchOption.JustLaunch;
         }
@@ -26,7 +28,8 @@ namespace EWova.Wristband
         private class BackToEWovaState : IState
         {
             public override string LabelKey => "BackToEWova";
-            public override string ConfirmationMessageKey => "BackToEWovaConfirm";
+            public override string ConfirmationMessageKey => "BackToEWovaConfirmation";
+            public override string MainSubmitMessageKey => "Confirm";
             public override string SubSubmitMessageKey => null;
             public override EWovaDeepLinkLaunchOption EWovaDeepLinkLaunchOption => EWovaDeepLinkLaunchOption.Default;
         }
@@ -34,7 +37,8 @@ namespace EWova.Wristband
         private class BackToEWovaSpaceState : IState
         {
             public override string LabelKey => "BackToEWovaSpace";
-            public override string ConfirmationMessageKey => "BackToEWovaSpaceConfirm";
+            public override string ConfirmationMessageKey => "BackToEWovaSpaceConfirmation";
+            public override string MainSubmitMessageKey => "BackToEWovaSpaceConfirm";
             public override string SubSubmitMessageKey => "JustLaunchEWovaConfirm";
             public override EWovaDeepLinkLaunchOption EWovaDeepLinkLaunchOption => EWovaDeepLinkLaunchOption.BackToWorldAndSpaceInstance;
         }
@@ -93,7 +97,7 @@ namespace EWova.Wristband
         protected override async UniTask ProcessClick()
         {
             string confirmationMessageKey = GetLocalizedString(CurrentState.ConfirmationMessageKey);
-            string submitLabel = GetLocalizedString("Confirm");
+            string submitLabel = GetLocalizedString(CurrentState.MainSubmitMessageKey);
             string subSubmitLabel = CurrentState.SubSubmitMessageKey == null ? null : GetLocalizedString(CurrentState.SubSubmitMessageKey);
 
             bool confirmed = await WristbandController.AlertUI.OpenAsync(new AlertUI.AlertData

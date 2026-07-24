@@ -12,10 +12,10 @@ namespace EWova.Wristband
         public virtual string FeatureKey => null;
 
         [SerializeField] private CircleButtonElement _circleButtonElement;
-        private Wristband _wristband;
+        [SerializeField] private Wristband _wristband;
 
         protected CircleButtonElement CircleButtonElement => _circleButtonElement;
-        [SerializeField] protected Wristband WristbandController => _wristband;
+        protected Wristband WristbandController => _wristband;
         protected WApiClient ApiClient => _wristband != null ? _wristband.ApiClient : null;
 
         protected bool BaseShow { get; set; } = true;

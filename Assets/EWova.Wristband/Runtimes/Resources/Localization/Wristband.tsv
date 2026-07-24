@@ -3,7 +3,6 @@ Confirm	Confirm	確認	确认	確認	확인	Xác nhận
 EWova	EWova	EWova	EWova	EWova	EWova	EWova
 EWova_Name	EWova	教育元宇宙	教育元宇宙	教育メタバース	교육 메타버스	Thế giới ảo giáo dục
 GoToEWova	Go to EWova	穿梭到 EWova	穿梭到 EWova	EWovaへ移動	EWova로 이동	Đi đến EWova
-GoToEWovaConfirm	Are you sure you want to switch to EWova?\nThis will exit this application.	確定要切換到 EWova 嗎？\n這將會退出此應用程式。	确定要切换到 EWova 吗？\n这将会退出此应用程序。	EWovaに切り替えてもよろしいですか？\nこのアプリケーションは終了します。	EWova로 전환하시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn chuyển sang EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
 CaptureToEWova	Capture to EWova	截圖儲存到 EWova	截图保存到 EWova	EWovaにキャプチャ	EWova로 캡처	Chụp màn hình lưu vào EWova
 ShareToEWova	Share to EWova	分享到 EWova	分享到 EWova	EWovaに共有	EWova에 공유	Chia sẻ lên EWova
 ViewLearningProfile	View Learning Profile	檢視學習歷程	查看学习历程	学習履歴を表示	학습 이력 보기	Xem hồ sơ học tập
@@ -33,8 +32,10 @@ ShareUseLastCapture	Do you want to use the last screenshot?	請問要使用上�
 ShareDoNotUseLastCaptureConfirm	Take a new one	拍新的一張	拍新的一张	新しく撮り直す	새로 촬영하기	Chụp một cái mới
 ShareActivityConfirm	Post	發布	发布	投稿	게시	Đăng
 ShareActivityDefaultPost	I'm experiencing {AppName} My progress has reached {CompletionProgress}%! Let's explore more exciting content together!	我正在體驗 {AppName} 目前進度已達 {CompletionProgress}%！一起來探索更多精彩內容吧！	我正在体验 {AppName} 目前进度已达 {CompletionProgress}%！一起来探索更多精彩内容吧！	{AppName} を体験しています。進捗率が {CompletionProgress}% に達しました！一緒にもっとエキサイティングなコンテンツを探索しましょう！	{AppName}을 체험하고 있습니다. 진행도가 {CompletionProgress}%에 달했습니다! 더 많은 흥미로운 콘텐츠를 함께 탐험해보세요!	Tôi đang trải nghiệm {AppName} Tiến độ hiện tại đã đạt {CompletionProgress}%! Hãy cùng nhau khám phá thêm nội dung thú vị!
-BackToEWovaConfirm	Are you sure you want to go back to EWova?\nThis will exit this application.	確定要回到 EWova 嗎？\n這將會退出此應用程式。	确定要回到 EWova 吗？\n这将会退出此应用程序。	EWovaに戻ってもよろしいですか？\nこのアプリケーションは終了します。	EWova로 돌아가시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn quay lại EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
+GoToEWovaConfirmation	Are you sure you want to switch to EWova?\nThis will exit this application.	確定要切換到 EWova 嗎？\n這將會退出此應用程式。	确定要切换到 EWova 吗？\n这将会退出此应用程序。	EWovaに切り替えてもよろしいですか？\nこのアプリケーションは終了します。	EWova로 전환하시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn chuyển sang EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
+BackToEWovaConfirmation	Are you sure you want to go back to EWova?\nThis will exit this application.	確定要回到 EWova 嗎？\n這將會退出此應用程式。	确定要回到 EWova 吗？\n这将会退出此应用程序。	EWovaに戻ってもよろしいですか？\nこのアプリケーションは終了します。	EWova로 돌아가시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn quay lại EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
+BackToEWovaSpaceConfirmation	Are you sure you want to go back to EWova Space?\nThis will exit this application.	確定要回到 EWova 世界空間中嗎？\n這將會退出此應用程式。	确定要回到 EWova 世界空间中吗？\n这将会退出此应用程序。	EWovaスペースに戻ってもよろしいですか？\nこのアプリケーションは終了します。	EWova 공간으로 돌아가시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn quay lại không gian EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
 BackToEWova	Portal back to EWova	穿越回 EWova	穿越回 EWova	EWova へ還る	EWova 로 다시 돌아가기	Quay lại EWova qua cổng
+BackToEWovaSpaceConfirm	Return to original world space	回到原世界空間	回到原世界空间	元のワールドスペースに戻る	원래 세상의 공간으로 돌아가기	Quay lại không gian thế giới ban đầu
 JustLaunchEWovaConfirm	Just launch EWova	僅啟動 EWova	仅启动 EWova	EWovaのみ起動	EWova만 시작	Chỉ khởi động EWova
 BackToEWovaSpace	Back to EWova Space	回到 EWova 世界空間	回到 EWova 世界空间	EWovaスペースに戻る	EWova 공간으로 돌아가기	Quay lại không gian EWova
-BackToEWovaSpaceConfirm	Are you sure you want to go back to EWova Space?\nThis will exit this application.	確定要回到 EWova 世界空間中嗎？\n這將會退出此應用程式。	确定要回到 EWova 世界空间中吗？\n这将会退出此应用程序。	EWovaスペースに戻ってもよろしいですか？\nこのアプリケーションは終了します。	EWova 공간으로 돌아가시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn quay lại không gian EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.

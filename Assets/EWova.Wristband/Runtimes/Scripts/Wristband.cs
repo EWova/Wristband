@@ -31,6 +31,7 @@ namespace EWova.Wristband
         public GameObject ChildMenuRoot;
         public Animator Animator;
         public Localizer Localizer;
+        public Image MainMenuCircleImage;
         public LocalizationLang LocalizationLang = LocalizationLang.auto;
 
         public RectTransform LearningPortfolioFrame;
@@ -120,7 +121,7 @@ namespace EWova.Wristband
         private void Awake()
         {
             ApiClient = new WApiClient();
-            ApiClient.LoggerLevel = LogLevel.Full;
+            //ApiClient.LoggerLevel = LogLevel.Full;
             InitializeLocalization();
 
             MainMenuBTN.onClick.AddListener(() =>
@@ -151,6 +152,7 @@ namespace EWova.Wristband
         private void Start()
         {
             AlertUI.Close();
+            MainMenuCircleImage.fillAmount = 0f;
         }
         private void Update()
         {
@@ -206,12 +208,27 @@ namespace EWova.Wristband
                 if (Logger.InfoEnabled)
                     Logger.Info($"Localization language set to {LocalizationLang}");
             }
+
+            if (m_circleAmountSetProcess > 0f && m_circleAmountSet > 0f)
+            {
+                m_circleAmountSetProcess -= Time.deltaTime;
+                if (m_circleAmountSetProcess < 0f)
+                    m_circleAmountSetProcess = 0f;
+
+                MainMenuCircleImage.fillAmount = m_circleAmountSetProcess / m_circleAmountSet;
+            }
         }
         private void OnDestroy()
         {
             ApiClient?.Dispose();
         }
 
+        private float m_circleAmountSet = 0f;
+        private float m_circleAmountSetProcess = 0f;
+        public void MainMenuCircleCountdown(float setSecond)
+        {
+            m_circleAmountSetProcess = m_circleAmountSet = setSecond;
+        }
         private static float EaseInExpo(float t) { return t == 0f ? 0f : Mathf.Pow(4f, 10f * (t - 1f)); }
         private static float EaseOutExpo(float t) { return t == 1f ? 1f : 1f - Mathf.Pow(4f, -10f * t); }
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
