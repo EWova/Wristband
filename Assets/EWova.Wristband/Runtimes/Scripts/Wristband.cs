@@ -1,6 +1,8 @@
+using EWova.LearningPortfolio;
 using EWova.Localization;
 
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,23 +10,32 @@ using UnityEngine.UI;
 
 namespace EWova.Wristband
 {
+    public class ScreenshotObject
+    {
+        public readonly Texture2D Texture;
+        public readonly string Url;
+
+        public ScreenshotObject(Texture2D texture, string url)
+        {
+            if (texture == null)
+                throw new ArgumentNullException(nameof(texture));
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+            Texture = texture;
+            Url = url;
+        }
+    }
     public class Wristband : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [Serializable]
-        class FeatureGroup
-        {
-            public string Flag;
-            public CircleButtonElement Element;
-        }
-
         public Button MainMenuBTN;
-        public CanvasGroup ChildMenuCanvasGroup;
+        public GameObject ChildMenuRoot;
         public Animator Animator;
         public Localizer Localizer;
-        [SerializeField] private FeatureGroup[] _featureGroups;
         public LocalizationLang LocalizationLang = LocalizationLang.auto;
 
         public RectTransform LearningPortfolioFrame;
+
+        public float MenuTransitionValue => _softAnimT;
 
         private bool _isMenuOpen = false;
         private bool t_isMenuOpen = false;
@@ -38,17 +49,40 @@ namespace EWova.Wristband
         [SerializeField] internal AlertUI AlertUI;
 
         public WApiClient ApiClient { get; private set; }
-        public string LastScreenshotUrl { get; set; }
+        public ScreenshotObject LastScreenshot
+        {
+            get => _lastScreenshot;
+            set
+            {
+                if (_lastScreenshot != value)
+                {
+                    var old = _lastScreenshot;
+                    _lastScreenshot = value;
+
+                    if (old != null)
+                        Destroy(old.Texture);
+                }
+            }
+        }
+        private ScreenshotObject _lastScreenshot;
 
         public DefaultTextProvider LocalizeTextProvider { get; private set; }
+
+        private readonly Dictionary<string, ApiModels.Feature> _features = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>供各 BaseBTN 依自己的 FeatureKey 向此拉取目前的顯示/啟用狀態。</summary>
+        public bool TryGetFeature(string key, out ApiModels.Feature feature)
+        {
+            return _features.TryGetValue(key, out feature);
+        }
 
         public void LoadFeatures(string flags)
         {
             var keys = flags.Split(',');
-            var states = new ApiModels.FeatureState[keys.Length];
+            var states = new ApiModels.Feature[keys.Length];
             for (int i = 0; i < keys.Length; i++)
             {
-                states[i] = new ApiModels.FeatureState
+                states[i] = new ApiModels.Feature
                 {
                     key = keys[i].Trim(),
                     visible = true,
@@ -58,10 +92,9 @@ namespace EWova.Wristband
             LoadFeatures(states);
         }
 
-        public void LoadFeatures(ApiModels.FeatureState[] features)
+        public void LoadFeatures(ApiModels.Feature[] features)
         {
-            foreach (var group in _featureGroups)
-                group.Element.gameObject.SetActive(false);
+            _features.Clear();
 
             foreach (var state in features)
             {
@@ -74,37 +107,21 @@ namespace EWova.Wristband
                     continue;
                 }
 
-                var group = Array.Find(_featureGroups,
-                    g => string.Equals(g.Flag, state.key, StringComparison.InvariantCultureIgnoreCase));
+                _features[state.key] = state;
 
-                if (group == null)
-                {
-                    if (Logger.WarnEnabled)
-                        Logger.Warn($"Feature key '{state.key}' not found in FeatureGroups.");
-                    continue;
-                }
-
-                group.Element.gameObject.SetActive(state.visible);
-
-                if (state.visible)
-                {
-                    group.Element.IsFeatureEnabled = state.enabled;
-                    group.Element.DisabledReasonKey = state.disabledReason;
-                    if (Logger.InfoEnabled)
-                        Logger.Info($"Feature '{state.key}': visible={state.visible}, enabled={state.enabled}, reason='{state.disabledReason}'");
-                }
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Feature '{state.key}': visible={state.visible}, enabled={state.enabled}, reason='{state.disabledReason}'");
             }
+
+            // 廣播讓底下所有 BaseBTN 各自向 TryGetFeature 拉取最新狀態，而非由這裡直接推送。
+            OnButtonInvoke?.Invoke();
         }
 
         private void Awake()
         {
             ApiClient = new WApiClient();
+            ApiClient.LoggerLevel = LogLevel.Full;
             InitializeLocalization();
-
-            foreach (var group in _featureGroups)
-            {
-                group.Element.gameObject.SetActive(false);
-            }
 
             MainMenuBTN.onClick.AddListener(() =>
             {
@@ -119,6 +136,7 @@ namespace EWova.Wristband
             try
             {
                 LocalizeTextProvider = DefaultTextProvider.LoadFromFile("Localization/Wristband");
+                LocalizeTextProvider.CurrentSetting = _currentLang;
                 if (Logger.InfoEnabled)
                     Logger.Info("Localization file loaded successfully.");
                 Localizer.DoLocalizeUpdate(LocalizeTextProvider);
@@ -136,7 +154,7 @@ namespace EWova.Wristband
         }
         private void Update()
         {
-            if (_isUIHovering)
+            if (_isUIHovering || AlertUI.IsOpen)
             {
                 _openingIdleTime = 0f;
             }

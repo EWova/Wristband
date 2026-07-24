@@ -19,7 +19,6 @@ namespace EWova.Localization
             foreach (var updater in localizeUpdater)
             {
                 string value = TextProvider.GetLocalizedString(updater.Key);
-                UnityEngine.Debug.Log($"Updating localization for key: {updater.Key}, value: {value}");
                 updater.OnLocalizeUpdated(value);
             }
         }

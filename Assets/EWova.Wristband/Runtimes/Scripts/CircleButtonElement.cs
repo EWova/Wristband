@@ -11,6 +11,7 @@ namespace EWova.Wristband
     {
         public Image LoadReminderFillImage;
         public Button Button;
+        public Image Image;
         public TextMeshProUGUI LabelTMP;
 
         public Action OnClick;
@@ -44,19 +45,6 @@ namespace EWova.Wristband
             set => gameObject.SetActive(value);
         }
 
-        public bool IsDone
-        {
-            get => _isDone;
-            set
-            {
-                if (_isDone != value)
-                {
-                    _isDone = value;
-                    _isDirty = true;
-                }
-            }
-        }
-
         public float Progress
         {
             get => _progress;
@@ -64,6 +52,7 @@ namespace EWova.Wristband
             {
                 if (_progress != value)
                 {
+                    _isDone = value >= 1.0f;
                     _progress = value;
                     _isDirty = true;
                 }
@@ -82,8 +71,8 @@ namespace EWova.Wristband
             if (!_isDirty)
                 return;
 
-            Button.interactable = IsDone && IsFeatureEnabled;
-            if (IsDone)
+            Button.interactable = _isDone && IsFeatureEnabled;
+            if (_isDone)
                 LoadReminderFillImage.fillAmount = 0f;
             else
                 LoadReminderFillImage.fillAmount = Remap(float.IsNaN(Progress) ? 0f : Progress, 0f, 1f, 1f, 0.1f); // 從1到0.1，避免完全填滿時看不出來
@@ -93,7 +82,7 @@ namespace EWova.Wristband
 
         public void ProcessClick()
         {
-            if (!IsDone)
+            if (!_isDone)
             {
                 if (Logger.WarnEnabled)
                     Logger.Warn("按鈕功能載入中，尚無法點擊");

@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadReminderFillImage: {fileID: 3252984250751097571}
   Button: {fileID: 3375468083444442406}
+  Image: {fileID: 1326836632075790680}
   LabelTMP: {fileID: 458709658266982887}
 --- !u!1 &3085935759880121314
 GameObject:
@@ -253,7 +254,6 @@ GameObject:
   - component: {fileID: 630241370251188195}
   - component: {fileID: 9185605384232758149}
   - component: {fileID: 458709658266982887}
-  - component: {fileID: 854025565614937067}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -379,34 +379,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &854025565614937067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7637614539693429835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1eef868ac33698745bc0ee5bf0c85507, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _key: GoToEWova
-  OnUpdate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 458709658266982887}
-        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
-        m_MethodName: SetText
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &8367288395397906049
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,7 +437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5801887, g: 0.8523323, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.36504495, b: 0.6037736, a: 0.23529412}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -583,7 +555,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0.69803923}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 0.2}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 0.69803923}
     m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.9019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

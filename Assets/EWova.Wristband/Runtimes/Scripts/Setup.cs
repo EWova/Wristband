@@ -16,15 +16,17 @@ namespace EWova.Wristband
         ShareToEWova = 1 << 2,
         ExploreWebsite = 1 << 3,
         QuitApp = 1 << 4,
-#if EWOVA_LEARNING_PORTFOLIO
         LearningProfile = 1 << 5,
-#endif
     }
 
     [RequireComponent(typeof(Wristband))]
     public class Setup : MonoBehaviour
     {
-        private WristbandFeatureFlags m_fallbackFeatures = WristbandFeatureFlags.GoToEWova | WristbandFeatureFlags.ExploreWebsite | WristbandFeatureFlags.QuitApp;
+        private WristbandFeatureFlags m_fallbackFeatures =
+            WristbandFeatureFlags.GoToEWova
+            | WristbandFeatureFlags.ExploreWebsite
+            | WristbandFeatureFlags.QuitApp
+            | WristbandFeatureFlags.LearningProfile;
 
 #if UNITY_EDITOR
         [SerializeField] private bool m_editorOfflineMode = false;
@@ -54,7 +56,7 @@ namespace EWova.Wristband
             try
             {
                 var response = await wristband.ApiClient.GetFeaturesAsync(destroyCancellationToken);
-                wristband.LoadFeatures(response.features);
+                wristband.LoadFeatures(response.data.features);
             }
             catch (OperationCanceledException) { }
             catch (Exception ex)
@@ -73,17 +75,15 @@ namespace EWova.Wristband
             { WristbandFeatureFlags.ShareToEWova,   "SHARE_TO_EWOVA" },
             { WristbandFeatureFlags.ExploreWebsite, "EXPLORE_EWOVA_WEBSITE" },
             { WristbandFeatureFlags.QuitApp,        "QUIT_APP" },
-#if EWOVA_LEARNING_PORTFOLIO
             { WristbandFeatureFlags.LearningProfile, "VIEW_LEARNING_PROFILE" },
-#endif
         };
 
-        private static ApiModels.FeatureState[] ToFeatureStates(WristbandFeatureFlags flags)
+        private static ApiModels.Feature[] ToFeatureStates(WristbandFeatureFlags flags)
         {
-            var result = new List<ApiModels.FeatureState>();
+            var result = new List<ApiModels.Feature>();
             foreach (var kv in _flagKeys)
             {
-                result.Add(new ApiModels.FeatureState
+                result.Add(new ApiModels.Feature
                 {
                     key = kv.Value,
                     visible = flags.HasFlag(kv.Key),

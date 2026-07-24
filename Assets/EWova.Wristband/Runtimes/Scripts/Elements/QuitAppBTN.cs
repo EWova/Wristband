@@ -1,31 +1,27 @@
 using Cysharp.Threading.Tasks;
 
-using UnityEngine;
-
 namespace EWova.Wristband
 {
     public class QuitAppBTN : BaseBTN
     {
-        [SerializeField] private string m_label = "Close App";
-        public override string LabelKey => m_label;
-        [SerializeField] private string m_description = "Close the app";
-        public override string DescriptionKey => m_description;
+        public override string LabelKey => "QuitApp";
+        public override string FeatureKey => "QUIT_APP";
 
         protected override UniTask Load(LoadProcess loadProcess)
         {
+            base.Load(loadProcess);
             loadProcess.SetComplete();
             return UniTask.CompletedTask;
         }
 
         protected override async UniTask ProcessClick()
         {
-            string message = Wristband.LocalizeTextProvider.GetLocalizedString("QuitAppConfirm");
-            string submitLabel = Wristband.LocalizeTextProvider.GetLocalizedString("Confirm");
-            bool confirmed = await Wristband.AlertUI.OpenAsync(new AlertUI.AlertData
+            string message = GetLocalizedString("QuitAppConfirm");
+            string submitLabel = GetLocalizedString("Confirm");
+            bool confirmed = await WristbandController.AlertUI.OpenAsync(new AlertUI.AlertData
             {
                 Message = message,
-                SubmitBTNMessage = submitLabel,
-                Submit = () => { }
+                MainSubmitMessage = submitLabel,
             });
 
             if (!confirmed)

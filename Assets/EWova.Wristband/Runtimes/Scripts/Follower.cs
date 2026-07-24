@@ -41,7 +41,8 @@ namespace EWova.Wristband
                     _pivot = pivotObject.transform;
                 }
 
-                transform.SetParent(null, false);
+                bool worldPositionStays = true; // 保持Scale不變
+                transform.SetParent(null, worldPositionStays);
             }
         }
 
@@ -49,12 +50,18 @@ namespace EWova.Wristband
         {
             if (_pivot != null)
             {
-                transform.position = Vector3.SmoothDamp(
+                if (smoothTime < 0.0001f)
+                {
+                    transform.position = _pivot.position;
+                }
+                else
+                {
+                    transform.position = Vector3.SmoothDamp(
                     transform.position,
                     _pivot.position,
                     ref _velocity,
-                    smoothTime
-                );
+                    smoothTime);
+                }
             }
 
             if (followRotation)

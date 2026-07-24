@@ -9,12 +9,9 @@ namespace EWova.Wristband
             "GO_TO_EWOVA",
             "QUIT_APP",
             "EXPLORE_EWOVA_WEBSITE",
-
-#if EWOVA_LEARNING_PORTFOLIO
             "CAPTURE_TO_EWOVA",
             "SHARE_TO_EWOVA",
             "VIEW_LEARNING_PROFILE",
-#endif
         };
     }
 }

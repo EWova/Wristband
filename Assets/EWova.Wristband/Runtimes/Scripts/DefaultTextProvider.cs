@@ -15,12 +15,27 @@ namespace EWova.Wristband
 
     public class DefaultTextProvider : ITextProvider
     {
-        private Dictionary<LocalizationLang, Dictionary<string, string>> _cache =
-            new Dictionary<LocalizationLang, Dictionary<string, string>>();
+        private readonly Dictionary<LocalizationLang, Dictionary<string, string>> _cache = new();
+        private LocalizationLang _currentSetting = LocalizationLang.auto;
 
         private DefaultTextProvider() { }
 
-        public LocalizationLang CurrentSetting { get; set; } = LocalizationLang.auto;
+        public LocalizationLang CurrentSetting
+        {
+            get => _currentSetting;
+            set
+            {
+                if (value == LocalizationLang.auto)
+                    value = GetSystemLanguage();
+
+                if (value != _currentSetting)
+                {
+                    _currentSetting = value;
+                    OnLanguageChanged?.Invoke(this);
+                }
+            }
+        }
+        public event Action<ITextProvider> OnLanguageChanged;
 
         private static string GetCode(LocalizationLang lang)
         {
@@ -38,7 +53,34 @@ namespace EWova.Wristband
 
         public string GetLocalizedString(string key)
         {
-            return GetLocalizedString(key, CurrentSetting);
+            return GetLocalizedStringInternal(key, CurrentSetting);
+        }
+
+        public string GetLocalizedString(string key, LocalizationLang targetLang)
+        {
+            if (targetLang == LocalizationLang.auto)
+                targetLang = GetSystemLanguage();
+
+            return GetLocalizedStringInternal(key, targetLang);
+        }
+
+        private string GetLocalizedStringInternal(string key, LocalizationLang targetLang)
+        {
+            if (_cache.TryGetValue(targetLang, out var langDict))
+            {
+                if (langDict.TryGetValue(key, out string value))
+                    return value;
+            }
+
+            // Fallback to English if the target language is not found
+            if (targetLang != LocalizationLang.en && _cache.ContainsKey(LocalizationLang.en))
+            {
+                if (_cache[LocalizationLang.en].TryGetValue(key, out string enValue))
+                    return enValue;
+            }
+
+            // If the key is not found in any language, return the key itself wrapped in brackets
+            return $"[{key}]";
         }
 
         public static DefaultTextProvider LoadFromFile(string filePath)
@@ -116,27 +158,7 @@ namespace EWova.Wristband
             }
         }
 
-        public string GetLocalizedString(string key, LocalizationLang targetLang = LocalizationLang.auto)
-        {
-            if (targetLang == LocalizationLang.auto)
-            {
-                targetLang = GetSystemLanguage();
-            }
 
-            if (_cache.TryGetValue(targetLang, out var langDict))
-            {
-                if (langDict.TryGetValue(key, out string value))
-                    return value;
-            }
-
-            if (targetLang != LocalizationLang.en && _cache.ContainsKey(LocalizationLang.en))
-            {
-                if (_cache[LocalizationLang.en].TryGetValue(key, out string enValue))
-                    return enValue;
-            }
-
-            return $"[{key}]";
-        }
 
         private LocalizationLang GetSystemLanguage()
         {

@@ -10,87 +10,123 @@ using UnityEngine.UI;
 
 namespace EWova.Wristband
 {
+    public enum SubmitType
+    {
+        Close,
+        Sub,
+        Main
+    }
+
+    public struct SubmitResult
+    {
+        public SubmitType Type;
+        public readonly bool IsOk => Type == SubmitType.Sub || Type == SubmitType.Main;
+        public readonly bool IsClose => Type == SubmitType.Close;
+
+        public static implicit operator SubmitResult(SubmitType type) => new SubmitResult { Type = type };
+        public static implicit operator SubmitType(SubmitResult result) => result.Type;
+        public static implicit operator bool(SubmitResult result) => result.IsOk;
+    }
+
     public class AlertUI : MonoBehaviour
     {
         public struct AlertData
         {
             public string Message;
-            public string SubmitBTNMessage;
-            public Action Submit;
+            public string SubSubmitMessage;
+            public string MainSubmitMessage;
+            public Texture2D ShowTexture;
+            public Action SubSubmit;
+            public Action MainSubmit;
             public Action Cancel;
 
-            public readonly void Validate()
-            {
-                if (string.IsNullOrEmpty(Message))
-                    throw new ArgumentException("Message cannot be null or empty");
-            }
+            /// <summary>
+            /// 是否關閉關閉按鈕，請當心使用，並配合 Close() 方法使用，否則可能造成介面無法關閉的情況
+            /// </summary>
+            public bool IsHideCloseButton;
         }
 
-        public Button SubmitBTN;
+        public Button SubSubmitBTN;
+        public TextMeshProUGUI SubSubmitTMP;
+        public Button MainSubmitBTN;
+        public TextMeshProUGUI MainSubmitTMP;
+        public Image ImagePreview;
         public Button CloseBTN;
         public TextMeshProUGUI MessageTMP;
-        public TextMeshProUGUI SubmitTMP;
 
-        public Action OnSubmit;
-        public Action OnCancel;
+        private Action _onSubSubmit;
+        private Action _onMainSubmit;
+        private Action _onCancel;
 
-        private CancellationTokenSource _openCts = null;
-        private UniTaskCompletionSource<bool> _openTask = null;
-        private bool _isClosing = false;
+        private UniTaskCompletionSource<SubmitResult> _openTask = null;
+        internal bool IsOpen => gameObject.activeInHierarchy;
 
         private void Awake()
         {
-            SubmitBTN.onClick.AddListener(OnSubmitBTN);
+            SubSubmitBTN.onClick.AddListener(OnSubmitBTN);
+            MainSubmitBTN.onClick.AddListener(OnSubmit2BTN);
             CloseBTN.onClick.AddListener(OnCloseBTN);
         }
 
-        public void Open(AlertData data)
+        private Sprite t_cache = null;
+        public UniTask<SubmitResult> OpenAsync(AlertData data)
         {
-            Reset();
+            if (_openTask != null)
+                CloseInternal(SubmitType.Close);
+            else
+                Reset();
 
-            data.Validate();
+            _openTask = new();
 
-            OnSubmit = data.Submit;
-            OnCancel = data.Cancel;
-
-            SubmitBTN.gameObject.SetActive(data.Submit != null);
-            MessageTMP.text = data.Message;
-            SubmitTMP.text = data.SubmitBTNMessage ?? "OK";
-            gameObject.SetActive(true);
-        }
-
-        public UniTask<bool> OpenAsync(AlertData data)
-        {
-            Reset();
-
-            data.Validate();
-
-            _openTask = new UniTaskCompletionSource<bool>();
-            _openCts = new CancellationTokenSource();
-
-            var token = _openCts.Token;
-            token.Register(() =>
+            _onSubSubmit = () =>
             {
-                _openTask?.TrySetResult(false);
-            });
-
-            OnSubmit = () =>
-            {
-                try { data.Submit?.Invoke(); }
+                CloseInternal(SubmitType.Sub);
+                try { data.SubSubmit?.Invoke(); }
                 catch (Exception ex) { Debug.LogError($"Error in OnSubmit: {ex}"); }
-                finally { _openTask?.TrySetResult(true); }
             };
 
-            OnCancel = () =>
+            _onMainSubmit = () =>
             {
+                CloseInternal(SubmitType.Main);
+                try { data.MainSubmit?.Invoke(); }
+                catch (Exception ex) { Debug.LogError($"Error in OnSubmit2: {ex}"); }
+            };
+
+            _onCancel = () =>
+            {
+                CloseInternal(SubmitType.Close);
                 try { data.Cancel?.Invoke(); }
                 catch (Exception ex) { Debug.LogError($"Error in OnCancel: {ex}"); }
-                finally { _openTask?.TrySetResult(false); }
             };
 
-            SubmitBTN.gameObject.SetActive(data.Submit != null);
             MessageTMP.text = data.Message;
-            SubmitTMP.text = data.SubmitBTNMessage ?? "OK";
+
+            SubSubmitTMP.text = data.SubSubmitMessage;
+            SubSubmitTMP.transform.parent.gameObject.SetActive(!string.IsNullOrEmpty(data.SubSubmitMessage));
+
+            MainSubmitTMP.text = data.MainSubmitMessage;
+            MainSubmitTMP.transform.parent.gameObject.SetActive(!string.IsNullOrEmpty(data.MainSubmitMessage));
+
+            CloseBTN.gameObject.SetActive(!data.IsHideCloseButton);
+
+            if (t_cache != null)
+            {
+                Destroy(t_cache);
+                t_cache = null;
+            }
+
+            if (data.ShowTexture != null)
+            {
+                t_cache = Sprite.Create(data.ShowTexture, new Rect(0, 0, data.ShowTexture.width, data.ShowTexture.height), new Vector2(0.5f, 0.5f));
+                ImagePreview.sprite = t_cache;
+                ImagePreview.material.SetInt("_ToLinear", !data.ShowTexture.isDataSRGB ? 1 : 0);
+                ImagePreview.gameObject.SetActive(true);
+            }
+            else
+            {
+                ImagePreview.gameObject.SetActive(false);
+            }
+
             gameObject.SetActive(true);
 
             return _openTask.Task;
@@ -98,49 +134,45 @@ namespace EWova.Wristband
 
         public void Close()
         {
-            if (_isClosing) return;
-            _isClosing = true;
+            CloseInternal(null);
+        }
 
-            try
-            {
-                gameObject.SetActive(false);
-                Reset();
-            }
-            finally
-            {
-                _isClosing = false;
-            }
+        private void CloseInternal(SubmitType? submitType)
+        {
+            var openTask = _openTask;
+            _openTask = null;
+
+            gameObject.SetActive(false);
+            Reset();
+
+            if (submitType != null)
+                openTask?.TrySetResult(submitType.Value);
         }
 
         private void OnSubmitBTN()
         {
-            OnSubmit?.Invoke();
-            Close();
+            _onSubSubmit?.Invoke();
         }
-
+        private void OnSubmit2BTN()
+        {
+            _onMainSubmit?.Invoke();
+        }
         private void OnCloseBTN()
         {
-            OnCancel?.Invoke();
-            Close();
+            _onCancel?.Invoke();
         }
 
         public void Reset()
         {
-            if (_openCts != null)
+            if (t_cache != null)
             {
-                _openCts.Cancel();
-                _openCts.Dispose();
-                _openCts = null;
+                Destroy(t_cache);
+                t_cache = null;
             }
 
-            if (_openTask != null)
-            {
-                _openTask.TrySetResult(false);
-                _openTask = null;
-            }
-
-            OnSubmit = null;
-            OnCancel = null;
+            _onSubSubmit = null;
+            _onMainSubmit = null;
+            _onCancel = null;
         }
 
         private void OnDestroy()

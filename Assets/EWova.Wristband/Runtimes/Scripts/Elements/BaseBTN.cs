@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 
+using System;
+
 using UnityEngine;
 
 namespace EWova.Wristband
@@ -7,48 +9,71 @@ namespace EWova.Wristband
     public abstract class BaseBTN : MonoBehaviour
     {
         public virtual string LabelKey => "{Label}";
-        public virtual string DescriptionKey => "{Description}";
+        public virtual string FeatureKey => null;
 
         [SerializeField] private CircleButtonElement _circleButtonElement;
         private Wristband _wristband;
 
         protected CircleButtonElement CircleButtonElement => _circleButtonElement;
-        protected Wristband Wristband => _wristband;
+        [SerializeField] protected Wristband WristbandController => _wristband;
         protected WApiClient ApiClient => _wristband != null ? _wristband.ApiClient : null;
+
+        protected bool BaseShow { get; set; } = true;
+        protected bool BaseEnabled { get; set; } = true;
+        protected string BaseDisabledReasonKey { get; set; } = null;
 
         private void OnValidate()
         {
             if (_circleButtonElement == null)
                 _circleButtonElement = GetComponent<CircleButtonElement>();
+            if (_wristband == null)
+                _wristband = GetComponentInParent<Wristband>();
         }
 
         private void Awake()
         {
             if (_circleButtonElement == null)
                 _circleButtonElement = GetComponent<CircleButtonElement>();
-            _wristband = GetComponentInParent<Wristband>();
+            if (_wristband == null)
+                _wristband = GetComponentInParent<Wristband>();
             _circleButtonElement.OnClick += ProcessClickInternal;
-            _wristband.OnButtonInvoke += SyncStateInternal;
+            _wristband.OnButtonInvoke += SyncState;
         }
         private void Start()
         {
-            Load();
+            UniTask.Void(async () =>
+            {
+                _loadProcess = new();
+                try
+                {
+                    await Load(_loadProcess);
+                    SyncState();
+                }
+                catch (System.Exception ex)
+                {
+                    UnityEngine.Debug.LogException(ex);
+                    _loadProcess.SetFailed();
+                }
+            });
         }
+        private Action _release;
         private void OnDestroy()
         {
             if (_circleButtonElement != null)
                 _circleButtonElement.OnClick -= ProcessClickInternal;
             if (_wristband != null)
-                _wristband.OnButtonInvoke -= SyncStateInternal;
+                _wristband.OnButtonInvoke -= SyncState;
+
+            _release?.Invoke();
+            _release = null;
         }
         private LoadProcess _loadProcess;
-        private void Update()
+        protected virtual void Update()
         {
             if (_loadProcess != null)
             {
                 _circleButtonElement.Progress = _loadProcess.Progress;
                 _circleButtonElement.Button.interactable = !_loadProcess.Failed;
-                _circleButtonElement.IsDone = _loadProcess.IsCompleted;
 
                 if (_loadProcess.IsCompleted)
                     _loadProcess = null;
@@ -71,30 +96,65 @@ namespace EWova.Wristband
                 IsCompleted = true;
             }
         }
-        protected abstract UniTask Load(LoadProcess loadProcess);
-        protected abstract UniTask ProcessClick();
-        protected virtual void SyncState() { }
 
-        internal void Load()
+        protected virtual UniTask Load(LoadProcess loadProcess)
         {
-            UniTask.Void(async () =>
+            if (!string.IsNullOrEmpty(LabelKey))
+                _circleButtonElement.LabelTMP.text = GetLocalizedString(LabelKey);
+
+            WristbandController.LocalizeTextProvider.OnLanguageChanged += OnLanguageChanged;
+            _release += () => WristbandController.LocalizeTextProvider.OnLanguageChanged -= OnLanguageChanged;
+
+            return UniTask.CompletedTask;
+        }
+        protected abstract UniTask ProcessClick();
+
+        protected virtual void UpdateBaseState() { }
+        protected virtual void OnLanguageChanged(Localization.ITextProvider textProvider)
+        {
+            if (!string.IsNullOrEmpty(LabelKey))
+                _circleButtonElement.LabelTMP.text = GetLocalizedString(LabelKey);
+        }
+        protected string GetLocalizedString(string key)
+        {
+            return WristbandController.LocalizeTextProvider.GetLocalizedString(key);
+        }
+
+        protected void SyncState()
+        {
+            UpdateBaseState();
+
+            bool featureVisible = true;
+            bool featureEnabled = true;
+            string featureReason = null;
+
+            if (FeatureKey != null)
             {
-                _loadProcess = new();
-                try
+                if (WristbandController.TryGetFeature(FeatureKey, out var feature))
                 {
-                    await Load(_loadProcess);
+                    featureVisible = feature.visible;
+                    featureEnabled = feature.enabled;
+                    featureReason = feature.disabledReason;
                 }
-                catch (System.Exception ex)
+                else
                 {
-                    UnityEngine.Debug.LogException(ex);
-                    _loadProcess.SetFailed();
+                    featureVisible = false;
                 }
-            });
+            }
+
+            CircleButtonElement.Show = BaseShow && featureVisible;
+            CircleButtonElement.IsFeatureEnabled = BaseEnabled && featureEnabled;
+            CircleButtonElement.DisabledReasonKey = featureReason ?? BaseDisabledReasonKey;
         }
-        internal void SyncStateInternal()
+
+        protected void ResyncAllBTNState()
         {
-            SyncState();
+            WristbandController.OnButtonInvoke.Invoke();
         }
+
+#if UNITY_6000_0_OR_NEWER
+        [HideInCallstack]
+#endif
         internal void ProcessClickInternal()
         {
             UniTask.Void(async () =>
@@ -112,7 +172,6 @@ namespace EWova.Wristband
                 finally
                 {
                     _circleButtonElement.Progress = 1f;
-                    _circleButtonElement.IsDone = true;
                 }
             });
         }

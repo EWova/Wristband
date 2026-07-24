@@ -14,3 +14,27 @@ QuitAppConfirm	Are you sure you want to quit the app?	確定要離開本應用�
 FEATURE_NOT_AVAILABLE	Currently unavailable	目前不可用	目前不可用	現在利用できません	현재 사용 불가	Hiện không khả dụng
 FEATURE_PERMISSION_DENIED	Permission denied	權限不足	权限不足	権限がありません	권한 없음	Không có quyền
 LearningPortfolioNotConnected	Learning Portfolio is not connected\nDo you want to log in?	學習歷程尚未登入\n要前往登入嗎？	学习历程尚未登录\n要前往登录吗？	学習履歴が未ログインです\nログインしますか？	학습 이력이 로그인되어 있지 않습니다\n로그인하시겠습니까?	Hồ sơ học tập chưa đăng nhập\nBạn có muốn đăng nhập không?
+LearningPortfolioLoginSuccess	Login successful	登入成功	登录成功	ログインに成功しました	로그인에 성공했습니다	Đăng nhập thành công
+ScreenshotFailed	Screenshot failed\n{0}	截圖失敗\n{0}	截图失败\n{0}	スクリーンショットに失敗しました\n{0}	스크린샷 실패\n{0}	Chụp màn hình thất bại\n{0}
+ScreenshotError	Error during screenshot or upload	截圖或上傳的過程中出現錯誤	截图或上传的过程中出现错误	スクリーンショットまたはアップロード中にエラーが発生	스크린샷 또는 업로드 중 오류 발생	Lỗi chụp hoặc tải lên
+LearningPortfolioConfirm	Log In	登入	登录	ログイン	로그인	Đăng nhập
+Login	Log In	登入	登录	ログイン	로그인	Đăng nhập
+CaptureGuidelines	After pressing the capture button, please keep your eyes on the target until capture is complete.	按下擷取按鈕後，請保持注視拍攝目標，直到拍攝完成。	按下截取按钮后，请保持注视拍摄目标，直到拍摄完成。	キャプチャボタンを押した後、キャプチャが完了するまで撮影対象を見つめてください。	캡처 버튼을 누른 후 캡처가 완료될 때까지 촬영 대상을 주시해주세요.	Sau khi nhấn nút chụp, vui lòng giữ ánh nhìn vào mục tiêu chụp cho đến khi chụp hoàn tất.
+TimerSeconds	Countdown {0}s	倒數 {0}s	倒数 {0}s	倒数 {0}s	카운트다운 {0}s	Đếm {0}s
+CaptureNow	Capture Now	立即拍攝	立即拍摄	今すぐキャプチャ	지금 캡처	Chụp ngay
+CaptureCheck	The screenshot is shown above. Do you want to upload it?	拍攝結果如上，請問要上傳嗎？	拍摄结果如上，要上传吗？	スクリーンショット結果は上記の通りです。アップロードしますか？	스크린샷 결과는 위와 같습니다. 업로드하시겠습니까?	Kết quả chụp như trên. Bạn có muốn tải lên không?
+CaptureRetake	Retake	重新拍攝	重新拍摄	撮り直す	다시 촬영	Chụp lại
+ShareConfirm	Do you want to share the current application activity to EWova?	要分享目前應用程式動態到 EWova 嗎？	要分享目前应用程序动态到 EWova 吗？	現在のアプリケーション動作を EWova に共有しますか？	현재 애플리케이션 활동을 EWova에 공유하시겠습니까?	Bạn có muốn chia sẻ hoạt động ứng dụng hiện tại đến EWova không?
+ShareWithConfirm	Include screenshot	包含畫面截圖	包含屏幕截图	スクリーンショットを含める	스크린샷 포함	Bao gồm ảnh chụp màn hình
+ShareWithScreenshotConfirm	Share with screenshot	包含截圖分享	包含截图分享	スクリーンショット付きで共有	스크린샷과 함께 공유	Chia sẻ kèm ảnh chụp
+ShareActivityFailed	Error during sharing or uploading activity\n{0}	分享或上傳動態的過程中出現錯誤\n{0}	分享或上传动态的过程中出现错误\n{0}	動作の共有またはアップロード中にエラーが発生\n{0}	동작 공유 또는 업로드 중 오류 발생\n{0}	Lỗi xảy ra trong quá trình chia sẻ hoặc tải lên hoạt động\n{0}
+ShareActivityError	Activity sharing failed	分享動態失敗	分享动态失败	動作の共有に失敗	활동 공유 실패	Chia sẻ hoạt động thất bại
+ShareUseLastCapture	Do you want to use the last screenshot?	請問要使用上一次的截圖嗎？	请问要使用上一次的截图吗？	前回のスクリーンショットを使用しますか？	마지막 스크린샷을 사용하시겠습니까?	Bạn có muốn sử dụng ảnh chụp trước đó không?
+ShareDoNotUseLastCaptureConfirm	Take a new one	拍新的一張	拍新的一张	新しく撮り直す	새로 촬영하기	Chụp một cái mới
+ShareActivityConfirm	Post	發布	发布	投稿	게시	Đăng
+ShareActivityDefaultPost	I'm experiencing {AppName} My progress has reached {CompletionProgress}%! Let's explore more exciting content together!	我正在體驗 {AppName} 目前進度已達 {CompletionProgress}%！一起來探索更多精彩內容吧！	我正在体验 {AppName} 目前进度已达 {CompletionProgress}%！一起来探索更多精彩内容吧！	{AppName} を体験しています。進捗率が {CompletionProgress}% に達しました！一緒にもっとエキサイティングなコンテンツを探索しましょう！	{AppName}을 체험하고 있습니다. 진행도가 {CompletionProgress}%에 달했습니다! 더 많은 흥미로운 콘텐츠를 함께 탐험해보세요!	Tôi đang trải nghiệm {AppName} Tiến độ hiện tại đã đạt {CompletionProgress}%! Hãy cùng nhau khám phá thêm nội dung thú vị!
+BackToEWovaConfirm	Are you sure you want to go back to EWova?\nThis will exit this application.	確定要回到 EWova 嗎？\n這將會退出此應用程式。	确定要回到 EWova 吗？\n这将会退出此应用程序。	EWovaに戻ってもよろしいですか？\nこのアプリケーションは終了します。	EWova로 돌아가시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn quay lại EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
+BackToEWova	Portal back to EWova	穿越回 EWova	穿越回 EWova	EWova へ還る	EWova 로 다시 돌아가기	Quay lại EWova qua cổng
+JustLaunchEWovaConfirm	Just launch EWova	僅啟動 EWova	仅启动 EWova	EWovaのみ起動	EWova만 시작	Chỉ khởi động EWova
+BackToEWovaSpace	Back to EWova Space	回到 EWova 世界空間	回到 EWova 世界空间	EWovaスペースに戻る	EWova 공간으로 돌아가기	Quay lại không gian EWova
+BackToEWovaSpaceConfirm	Are you sure you want to go back to EWova Space?\nThis will exit this application.	確定要回到 EWova 世界空間中嗎？\n這將會退出此應用程式。	确定要回到 EWova 世界空间中吗？\n这将会退出此应用程序。	EWovaスペースに戻ってもよろしいですか？\nこのアプリケーションは終了します。	EWova 공간으로 돌아가시겠습니까?\n이 애플리케이션이 종료됩니다.	Bạn có chắc chắn muốn quay lại không gian EWova không?\nThao tác này sẽ thoát khỏi ứng dụng này.
