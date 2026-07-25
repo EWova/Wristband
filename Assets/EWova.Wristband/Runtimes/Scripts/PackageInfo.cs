@@ -4,6 +4,6 @@ namespace EWova.Wristband
     internal static class PackageInfo
     {
         public const string Name = "com.ewova.wristband";
-        public const string Version = "2026.6.1";
+        public const string Version = "2026.8.1";
     }
 }

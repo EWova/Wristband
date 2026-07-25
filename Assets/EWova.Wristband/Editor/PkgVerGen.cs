@@ -11,7 +11,7 @@ namespace EWova.Wristband.Editor
     {
         static PkgVerGen() { }
 
-        internal const string PackageJsonGuid = "165c1b42657533644be50734437185f8";
+        internal const string PackageJsonGuid = "352491e575f34f44da9dc9aef9524291";
         internal const string PackageInfoGuid = "4d9612c24c9d9ed41b0c34901b23ac17";
         internal static void Generate()
         {
