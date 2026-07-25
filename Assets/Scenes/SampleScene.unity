@@ -18441,6 +18441,10 @@ PrefabInstance:
       propertyPath: LookAt
       value: 
       objectReference: {fileID: 1373153107}
+    - target: {fileID: 7722806864046518114, guid: 67ab72cc887c08e4d831d5526784c8b6, type: 3}
+      propertyPath: followRotation
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8986305990479021028, guid: 67ab72cc887c08e4d831d5526784c8b6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
