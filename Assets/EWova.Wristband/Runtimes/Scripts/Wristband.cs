@@ -1,4 +1,8 @@
+using EWova.LearningPortfolio;
+using EWova.Localization;
+
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,54 +10,153 @@ using UnityEngine.UI;
 
 namespace EWova.Wristband
 {
+    public class ScreenshotObject
+    {
+        public readonly Texture2D Texture;
+        public readonly string Url;
+
+        public ScreenshotObject(Texture2D texture, string url)
+        {
+            if (texture == null)
+                throw new ArgumentNullException(nameof(texture));
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
+            Texture = texture;
+            Url = url;
+        }
+    }
     public class Wristband : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [Serializable]
-        class FeatureGroup
-        {
-            public string Flag;
-            public CircleButtonElement Element;
-        }
-
         public Button MainMenuBTN;
-        public CanvasGroup ChildMenuCanvasGroup;
+        public GameObject ChildMenuRoot;
         public Animator Animator;
-        [SerializeField] private FeatureGroup[] _featureGroups;
+        public Localizer Localizer;
+        public Image MainMenuCircleImage;
+        public LocalizationLang LocalizationLang = LocalizationLang.auto;
+
+        public RectTransform LearningPortfolioFrame;
+
+        public float MenuTransitionValue => _softAnimT;
 
         private bool _isMenuOpen = false;
+        private bool t_isMenuOpen = false;
         private float _openingIdleTime = 0f;
         private float _animT = 0;
         private bool _isUIHovering = false;
-        private CircleButtonElement[] _circleButtonElements;
         private static readonly int OpeningHash = Animator.StringToHash("Opening");
         private float _softAnimT = 0f;
+        private LocalizationLang _currentLang = LocalizationLang.auto;
+        internal Action OnButtonInvoke;
+        [SerializeField] internal AlertUI AlertUI;
 
-        public void LoadFlag(string flags)
+        public WApiClient ApiClient { get; private set; }
+        public ScreenshotObject LastScreenshot
         {
-            foreach (var group in _featureGroups)
+            get => _lastScreenshot;
+            set
             {
-                bool isActive = flags.Contains(group.Flag, StringComparison.InvariantCultureIgnoreCase);
-                group.Element.gameObject.SetActive(isActive);
-                Logger.Info($"Setting feature '{group.Flag}' to {(isActive ? "active" : "inactive")} based on flags.");
+                if (_lastScreenshot != value)
+                {
+                    var old = _lastScreenshot;
+                    _lastScreenshot = value;
+
+                    if (old != null)
+                        Destroy(old.Texture);
+                }
             }
+        }
+        private ScreenshotObject _lastScreenshot;
+
+        public DefaultTextProvider LocalizeTextProvider { get; private set; }
+
+        private readonly Dictionary<string, ApiModels.Feature> _features = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>供各 BaseBTN 依自己的 FeatureKey 向此拉取目前的顯示/啟用狀態。</summary>
+        public bool TryGetFeature(string key, out ApiModels.Feature feature)
+        {
+            return _features.TryGetValue(key, out feature);
+        }
+
+        public void LoadFeatures(string flags)
+        {
+            var keys = flags.Split(',');
+            var states = new ApiModels.Feature[keys.Length];
+            for (int i = 0; i < keys.Length; i++)
+            {
+                states[i] = new ApiModels.Feature
+                {
+                    key = keys[i].Trim(),
+                    visible = true,
+                    enabled = true
+                };
+            }
+            LoadFeatures(states);
+        }
+
+        public void LoadFeatures(ApiModels.Feature[] features)
+        {
+            _features.Clear();
+
+            foreach (var state in features)
+            {
+                if (string.IsNullOrEmpty(state.key)) continue;
+
+                if (!WristbandCapabilities.Supported.Contains(state.key))
+                {
+                    if (Logger.InfoEnabled)
+                        Logger.Info($"Feature '{state.key}' skipped: not supported by this installation.");
+                    continue;
+                }
+
+                _features[state.key] = state;
+
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Feature '{state.key}': visible={state.visible}, enabled={state.enabled}, reason='{state.disabledReason}'");
+            }
+
+            // 廣播讓底下所有 BaseBTN 各自向 TryGetFeature 拉取最新狀態，而非由這裡直接推送。
+            OnButtonInvoke?.Invoke();
         }
 
         private void Awake()
         {
-            foreach (var group in _featureGroups)
-            {
-                group.Element.gameObject.SetActive(false);
-            }
+            ApiClient = new WApiClient();
+            //ApiClient.LoggerLevel = LogLevel.Full;
+            InitializeLocalization();
 
             MainMenuBTN.onClick.AddListener(() =>
             {
                 _isMenuOpen = !_isMenuOpen;
-                Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
+                OnButtonInvoke?.Invoke();
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Main menu button clicked. Menu is now {(_isMenuOpen ? "open" : "closed")}.");
             });
+        }
+        private void InitializeLocalization()
+        {
+            try
+            {
+                LocalizeTextProvider = DefaultTextProvider.LoadFromFile("Localization/Wristband");
+                LocalizeTextProvider.CurrentSetting = _currentLang;
+                if (Logger.InfoEnabled)
+                    Logger.Info("Localization file loaded successfully.");
+                Localizer.DoLocalizeUpdate(LocalizeTextProvider);
+            }
+            catch (Exception ex)
+            {
+                if (Logger.ErrorEnabled)
+                    Logger.Err($"Failed to load localization:");
+                UnityEngine.Debug.LogException(ex);
+            }
+        }
+        private void Start()
+        {
+            AlertUI.Close();
+            MainMenuCircleImage.fillAmount = 0f;
         }
         private void Update()
         {
-            if (_isUIHovering)
+            if (_isUIHovering || AlertUI.IsOpen)
             {
                 _openingIdleTime = 0f;
             }
@@ -71,21 +174,61 @@ namespace EWova.Wristband
 
             if (_isMenuOpen)
             {
+                if (!t_isMenuOpen)
+                {
+                    t_isMenuOpen = true;
+                }
+
                 _openingIdleTime += Time.deltaTime;
 
                 if (_openingIdleTime > 5f)
                 {
-                    Logger.Info("Idle time exceeded 5 seconds. Closing menu.");
+                    if (Logger.InfoEnabled)
+                        Logger.Info("Idle time exceeded 5 seconds. Closing menu.");
                     _isMenuOpen = false;
                     _openingIdleTime = 0f;
                 }
             }
             else
             {
+                if (t_isMenuOpen)
+                {
+                    AlertUI.Close();
+                    t_isMenuOpen = false;
+                }
+
                 _openingIdleTime = 0f;
             }
+
+            if (_currentLang != LocalizationLang)
+            {
+                _currentLang = LocalizationLang;
+                LocalizeTextProvider.CurrentSetting = LocalizationLang;
+                Localizer.DoLocalizeUpdate(LocalizeTextProvider);
+                if (Logger.InfoEnabled)
+                    Logger.Info($"Localization language set to {LocalizationLang}");
+            }
+
+            if (m_circleAmountSetProcess > 0f && m_circleAmountSet > 0f)
+            {
+                m_circleAmountSetProcess -= Time.deltaTime;
+                if (m_circleAmountSetProcess < 0f)
+                    m_circleAmountSetProcess = 0f;
+
+                MainMenuCircleImage.fillAmount = m_circleAmountSetProcess / m_circleAmountSet;
+            }
+        }
+        private void OnDestroy()
+        {
+            ApiClient?.Dispose();
         }
 
+        private float m_circleAmountSet = 0f;
+        private float m_circleAmountSetProcess = 0f;
+        public void MainMenuCircleCountdown(float setSecond)
+        {
+            m_circleAmountSetProcess = m_circleAmountSet = setSecond;
+        }
         private static float EaseInExpo(float t) { return t == 0f ? 0f : Mathf.Pow(4f, 10f * (t - 1f)); }
         private static float EaseOutExpo(float t) { return t == 1f ? 1f : 1f - Mathf.Pow(4f, -10f * t); }
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)

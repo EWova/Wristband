@@ -1,0 +1,19 @@
+{
+    "name": "EWova.Wristband.Editor",
+    "rootNamespace": "EWova.Wristband.Editor",
+    "references": [
+        "EWova.Wristband",
+        "EWova.Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

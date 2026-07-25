@@ -11,6 +11,7 @@ namespace EWova.Wristband
         public float startAngle = 0f;        // 起始角度（度）
         public bool clockwise = true;        // 是否順時針
         public bool evenlySpaced = true;     // 是否平均分布
+        public float[] rotateOffset = new float[0]; // 每個子物件的旋轉偏移角度（度）
 
         public override void CalculateLayoutInputHorizontal()
         {
@@ -29,18 +30,18 @@ namespace EWova.Wristband
         private void Arrange()
         {
             int count = rectChildren.Count;
-            if (count == 0) return;
+            if (count == 0) 
+                return;
 
             float angleStep = evenlySpaced ? 360f / count : 0f;
+            float offset = (count < rotateOffset.Length) ? rotateOffset[count] : 0f;
 
             for (int i = 0; i < count; i++)
             {
-                float angle = startAngle;
+                float angle = startAngle + offset;
 
                 if (evenlySpaced)
-                {
                     angle += (clockwise ? -1 : 1) * angleStep * i;
-                }
 
                 float rad = angle * Mathf.Deg2Rad;
 
