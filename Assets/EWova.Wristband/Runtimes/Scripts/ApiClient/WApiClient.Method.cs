@@ -71,6 +71,32 @@ namespace EWova.Wristband
             catch (OperationCanceledException) { throw; }
         }
 
+        private UniTask<ApiModels.FeatureResponse>? _cachedFeaturesTask;
+
+        /// <summary>
+        /// 共用的功能旗標查詢：多個 Wristband/Setup 同時呼叫時只會實際發送一次請求，
+        /// 其餘呼叫端共用同一個結果。呼叫端可用自己的 CancellationToken 中止等待，
+        /// 不會影響其他呼叫端仍在進行中的請求。
+        /// </summary>
+        public UniTask<ApiModels.FeatureResponse> GetFeaturesCachedAsync(CancellationToken ct = default)
+        {
+            _cachedFeaturesTask ??= FetchFeaturesForCacheAsync().Preserve();
+            return _cachedFeaturesTask.Value.AttachExternalCancellation(ct);
+        }
+
+        private async UniTask<ApiModels.FeatureResponse> FetchFeaturesForCacheAsync()
+        {
+            try
+            {
+                return await GetFeaturesAsync(_disposeCts.Token);
+            }
+            catch
+            {
+                _cachedFeaturesTask = null;
+                throw;
+            }
+        }
+
         #endregion
 
         #region 截圖與分享 API (Screenshot & Share)

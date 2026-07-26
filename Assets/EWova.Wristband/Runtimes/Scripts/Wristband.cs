@@ -49,7 +49,7 @@ namespace EWova.Wristband
         internal Action OnButtonInvoke;
         [SerializeField] internal AlertUI AlertUI;
 
-        public WApiClient ApiClient { get; private set; }
+        public WApiClient ApiClient => WApiClient.Instance;
         public ScreenshotObject LastScreenshot
         {
             get => _lastScreenshot;
@@ -120,8 +120,6 @@ namespace EWova.Wristband
 
         private void Awake()
         {
-            ApiClient = new WApiClient();
-            //ApiClient.LoggerLevel = LogLevel.Full;
             InitializeLocalization();
 
             MainMenuBTN.onClick.AddListener(() =>
@@ -218,11 +216,6 @@ namespace EWova.Wristband
                 MainMenuCircleImage.fillAmount = m_circleAmountSetProcess / m_circleAmountSet;
             }
         }
-        private void OnDestroy()
-        {
-            ApiClient?.Dispose();
-        }
-
         private float m_circleAmountSet = 0f;
         private float m_circleAmountSetProcess = 0f;
         public void MainMenuCircleCountdown(float setSecond)
