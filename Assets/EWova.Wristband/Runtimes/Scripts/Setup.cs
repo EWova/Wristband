@@ -55,7 +55,7 @@ namespace EWova.Wristband
 
             try
             {
-                var response = await wristband.ApiClient.GetFeaturesAsync(destroyCancellationToken);
+                var response = await wristband.ApiClient.GetFeaturesCachedAsync(destroyCancellationToken);
                 wristband.LoadFeatures(response.data.features);
             }
             catch (OperationCanceledException) { }
