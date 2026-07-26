@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EWova.Wristband
 {
-    public partial class WApiClient : LPApiClient
+    internal partial class WApiClient : LPApiClient
     {
         private static WApiClient _instance;
         /// <summary>整個 App 共用的單一實例，避免每個 Wristband 都各自建立一份。</summary>
