@@ -49,7 +49,7 @@ namespace EWova.Wristband
         internal Action OnButtonInvoke;
         [SerializeField] internal AlertUI AlertUI;
 
-        public WApiClient ApiClient => WApiClient.Instance;
+        internal WApiClient ApiClient => WApiClient.Instance;
         public ScreenshotObject LastScreenshot
         {
             get => _lastScreenshot;

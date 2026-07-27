@@ -22,7 +22,7 @@ namespace EWova.Wristband
         GetLearningProfile
     }
 
-    public partial class WApiClient
+    internal partial class WApiClient
     {
         private const string WristbandContentType = "application/json";
         protected UniTask<string> Get(string endpoint, CancellationToken ct = default)
