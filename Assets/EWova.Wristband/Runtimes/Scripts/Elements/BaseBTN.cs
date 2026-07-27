@@ -16,7 +16,7 @@ namespace EWova.Wristband
 
         protected CircleButtonElement CircleButtonElement => _circleButtonElement;
         protected Wristband WristbandController => _wristband;
-        protected WApiClient ApiClient => _wristband != null ? _wristband.ApiClient : null;
+        internal WApiClient ApiClient => _wristband != null ? _wristband.ApiClient : null;
 
         protected bool BaseShow { get; set; } = true;
         protected bool BaseEnabled { get; set; } = true;
