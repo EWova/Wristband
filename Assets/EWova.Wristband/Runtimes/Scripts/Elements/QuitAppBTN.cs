@@ -30,7 +30,7 @@ namespace EWova.Wristband
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.ExitPlaymode();
 #else
-            Application.Quit();
+            UnityEngine.Application.Quit();
 #endif
         }
     }
