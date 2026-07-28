@@ -2,5 +2,12 @@
   "name": "com.ewova.wristband",
   "version": "2026.8.2",
   "displayName": "EWova.Wristband",
-  "description": "EWova.Wristband"
+  "description": "整合於教材應用，支援 EWova 跳轉、切換與分享畫面，並串聯 ewova 社群互動，提升操作效率與學習體驗。",
+  "samples": [
+    {
+      "displayName": "UI 使用範例",
+      "description": "在 PC 與 XR 環境下使用 Wristband UI 擺放範例",
+      "path": "Samples~/UI Examples"
+    }
+  ]
 }
