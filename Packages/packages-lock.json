@@ -8,20 +8,20 @@
       "hash": "a9e27c03d411d2fca01cc7410c24c97cd77cb539"
     },
     "com.ewova.core": {
-      "version": "https://github.com/EWova/UnityPackageCore.git?path=Assets/EWova.Core#Dev",
+      "version": "https://github.com/EWova/UnityPackageCore.git?path=Assets/EWova.Core#dev",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "025ca3fa7b2b35f94f0c5b5d546d3a6d87f1f124"
+      "hash": "a09b2f493676e83802f321fd527d2bb802d75692"
     },
     "com.ewova.learningportfoliosdk": {
-      "version": "https://github.com/EWova/LearningPortfolioSDK.git?path=Assets/EWova.LearningPortfolioSDK#dev.2026.6",
+      "version": "https://github.com/EWova/LearningPortfolioSDK.git?path=Assets/EWova.LearningPortfolioSDK#dev",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.ewova.core": "1.6.1"
+        "com.ewova.core": "1.7.0"
       },
-      "hash": "0caff9ab44c693371aec7429dd791fcc7416fc03"
+      "hash": "447efdad9722f05be2848dad71b432367a52eb05"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
