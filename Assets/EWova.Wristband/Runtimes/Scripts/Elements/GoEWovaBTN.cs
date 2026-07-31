@@ -40,7 +40,7 @@ namespace EWova.Wristband
             public override string ConfirmationMessageKey => "BackToEWovaSpaceConfirmation";
             public override string MainSubmitMessageKey => "BackToEWovaSpaceConfirm";
             public override string SubSubmitMessageKey => "JustLaunchEWovaConfirm";
-            public override EWovaDeepLinkLaunchOption EWovaDeepLinkLaunchOption => EWovaDeepLinkLaunchOption.BackToWorldAndSpaceInstance;
+            public override EWovaDeepLinkLaunchOption EWovaDeepLinkLaunchOption => EWovaDeepLinkLaunchOption.Default;
         }
 
         public override string LabelKey => (CurrentState ?? _goToEWovaState).LabelKey;
@@ -112,7 +112,7 @@ namespace EWova.Wristband
 
             var option = CurrentState.EWovaDeepLinkLaunchOption;
 
-            string url = EWovaApp.GetDeepLink(option);
+            string url = await EWovaApp.GetDeepLink(option, LearningPortfolio.LearningPortfolio.EWovaAuth);
             if (Logger.InfoEnabled)
                 Logger.Info($"Opening EWova with URL: {url}");
 
