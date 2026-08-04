@@ -94,7 +94,7 @@ namespace EWova.Wristband
         }
 
         ConnectProcess _process = null;
-        CancellationTokenSource _connectSource = new CancellationTokenSource();
+        CancellationTokenSource _connectSource = null;
         protected override async UniTask ProcessClick()
         {
             if (LearningPortfolio.LearningPortfolio.IsConnected)
@@ -125,6 +125,7 @@ namespace EWova.Wristband
                 return;
 
             _process = new ConnectProcess();
+            _connectSource = new CancellationTokenSource();
             try
             {
                 CancellationToken token = CancellationTokenSource.CreateLinkedTokenSource(_connectSource.Token, destroyCancellationToken).Token;
