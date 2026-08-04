@@ -207,20 +207,12 @@ namespace EWova.Wristband
                     Logger.Info($"Localization language set to {LocalizationLang}");
             }
 
-            if (m_circleAmountSetProcess > 0f && m_circleAmountSet > 0f)
-            {
-                m_circleAmountSetProcess -= Time.deltaTime;
-                if (m_circleAmountSetProcess < 0f)
-                    m_circleAmountSetProcess = 0f;
-
-                MainMenuCircleImage.fillAmount = m_circleAmountSetProcess / m_circleAmountSet;
-            }
+            _mainMenuCircleController.Update(Time.deltaTime, MainMenuCircleImage);
         }
-        private float m_circleAmountSet = 0f;
-        private float m_circleAmountSetProcess = 0f;
-        public void MainMenuCircleCountdown(float setSecond)
+        private IMainMenuCircleController _mainMenuCircleController;
+        internal void SetCircleController(IMainMenuCircleController controller)
         {
-            m_circleAmountSetProcess = m_circleAmountSet = setSecond;
+            _mainMenuCircleController = controller;
         }
         private static float EaseInExpo(float t) { return t == 0f ? 0f : Mathf.Pow(4f, 10f * (t - 1f)); }
         private static float EaseOutExpo(float t) { return t == 1f ? 1f : 1f - Mathf.Pow(4f, -10f * t); }
@@ -231,6 +223,49 @@ namespace EWova.Wristband
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             _isUIHovering = false;
+        }
+    }
+
+    internal class MainMenuCircleControllerFactory
+    {
+        private static readonly Countdown _countdownInstance = new Countdown();
+        private static readonly Directly _directlyInstance = new Directly();
+        public static Countdown StartCountdown(float seconds)
+        {
+            _countdownInstance.circleAmountSetProcess = _countdownInstance.circleAmountSet = seconds;
+            return _countdownInstance;
+        }
+        public static Directly UpdateDirectly(float value)
+        {
+            _directlyInstance.circleAmountSet = value;
+            return _directlyInstance;
+        }
+    }
+    internal abstract class IMainMenuCircleController
+    {
+        public abstract void Update(float deltaTime, Image circleImage);
+    }
+    internal class Countdown : IMainMenuCircleController
+    {
+        public float circleAmountSet = 0f;
+        public float circleAmountSetProcess = 0f;
+        public override void Update(float deltaTime, Image circleImage)
+        {
+            if (circleAmountSetProcess <= 0f || circleAmountSet <= 0f)
+                return;
+
+            circleAmountSetProcess -= deltaTime;
+            if (circleAmountSetProcess < 0f)
+                circleAmountSetProcess = 0f;
+            circleImage.fillAmount = circleAmountSetProcess / circleAmountSet;
+        }
+    }
+    internal class Directly : IMainMenuCircleController
+    {
+        public float circleAmountSet = 0f;
+        public override void Update(float deltaTime, Image circleImage)
+        {
+            circleImage.fillAmount = circleAmountSet;
         }
     }
 }

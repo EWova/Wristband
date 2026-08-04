@@ -25,38 +25,58 @@ namespace EWova.Wristband
     internal partial class WApiClient
     {
         private const string WristbandContentType = "application/json";
-        protected UniTask<string> Get(string endpoint, CancellationToken ct = default)
+        protected UniTask<string> Get(
+            string endpoint,
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
             => Send<string>(RequestTask.GET(
                 backendUrlOrAbsoluteUrl: endpoint,
                 throwApiExceptionFor4xxResponses: false, // 不拋出 4xx 錯誤，讓呼叫端自行處理
+                progress: progress,
                 ct: ct));
-        protected UniTask<T> Get<T>(string endpoint, CancellationToken ct = default)
+        protected UniTask<T> Get<T>(
+            string endpoint,
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
             => Send<T>(RequestTask.GET(
                 backendUrlOrAbsoluteUrl: endpoint,
                 throwApiExceptionFor4xxResponses: false, // 不拋出 4xx 錯誤，讓呼叫端自行處理
+                progress: progress,
                 ct: ct));
-        protected UniTask<string> Post(string endpoint, object jsonBody, CancellationToken ct = default)
+        protected UniTask<string> Post(
+            string endpoint,
+            object jsonBody,
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
             => Send<string>(RequestTask.POST(
                 backendUrlOrAbsoluteUrl: endpoint,
                 body: jsonBody,
                 contentType: WristbandContentType,
                 throwApiExceptionFor4xxResponses: false, // 不拋出 4xx 錯誤，讓呼叫端自行處理
+                progress: progress,
                 ct: ct));
-        protected UniTask<T> Post<T>(string endpoint, object jsonBody, CancellationToken ct = default)
+        protected UniTask<T> Post<T>(
+            string endpoint,
+            object jsonBody,
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
             => Send<T>(RequestTask.POST(
                 backendUrlOrAbsoluteUrl: endpoint,
                 body: jsonBody,
                 contentType: WristbandContentType,
                 throwApiExceptionFor4xxResponses: false, // 不拋出 4xx 錯誤，讓呼叫端自行處理
+                progress: progress,
                 ct: ct));
 
         #region 功能旗標 API (Feature Flags)
 
-        public async UniTask<ApiModels.FeatureResponse> GetFeaturesAsync(CancellationToken ct = default)
+        public async UniTask<ApiModels.FeatureResponse> GetFeaturesAsync(
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
         {
             try
             {
-                return await Get<ApiModels.FeatureResponse>("api/v1/me/wristband/features", ct);
+                return await Get<ApiModels.FeatureResponse>("api/v1/me/wristband/features", progress, ct);
             }
             catch (ApiException ex)
             {
@@ -72,17 +92,19 @@ namespace EWova.Wristband
         /// 其餘呼叫端共用同一個結果。呼叫端可用自己的 CancellationToken 中止等待，
         /// 不會影響其他呼叫端仍在進行中的請求。
         /// </summary>
-        public UniTask<ApiModels.FeatureResponse> GetFeaturesCachedAsync(CancellationToken ct = default)
+        public UniTask<ApiModels.FeatureResponse> GetFeaturesCachedAsync(
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
         {
-            _cachedFeaturesTask ??= FetchFeaturesForCacheAsync().Preserve();
+            _cachedFeaturesTask ??= FetchFeaturesForCacheAsync(progress).Preserve();
             return _cachedFeaturesTask.Value.AttachExternalCancellation(ct);
         }
 
-        private async UniTask<ApiModels.FeatureResponse> FetchFeaturesForCacheAsync()
+        private async UniTask<ApiModels.FeatureResponse> FetchFeaturesForCacheAsync(IProgress<float> progress)
         {
             try
             {
-                return await GetFeaturesAsync(_disposeCts.Token);
+                return await GetFeaturesAsync(progress, _disposeCts.Token);
             }
             catch
             {
@@ -94,11 +116,14 @@ namespace EWova.Wristband
         #endregion
 
         #region 截圖與分享 API (Screenshot & Share)
-        public async UniTask<ApiModels.UploadScreenshotResponse> UploadScreenshotAsync(ApiModels.UploadScreenshotRequest request, CancellationToken ct = default)
+        public async UniTask<ApiModels.UploadScreenshotResponse> UploadScreenshotAsync(
+            ApiModels.UploadScreenshotRequest request,
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
         {
             try
             {
-                return await Post<ApiModels.UploadScreenshotResponse>("api/v1/me/screenshots", request, ct);
+                return await Post<ApiModels.UploadScreenshotResponse>("api/v1/me/screenshots", request, progress, ct);
             }
             catch (ApiException ex)
             {
@@ -107,11 +132,14 @@ namespace EWova.Wristband
             catch (OperationCanceledException) { throw; }
         }
 
-        public async UniTask<ApiModels.ShareActivityResponse> ShareActivityAsync(ApiModels.ShareActivityRequest request, CancellationToken ct = default)
+        public async UniTask<ApiModels.ShareActivityResponse> ShareActivityAsync(
+            ApiModels.ShareActivityRequest request,
+            IProgress<float> progress = null,
+            CancellationToken ct = default)
         {
             try
             {
-                return await Post<ApiModels.ShareActivityResponse>("api/v1/me/shares", request, ct);
+                return await Post<ApiModels.ShareActivityResponse>("api/v1/me/shares", request, progress, ct);
             }
             catch (ApiException ex)
             {

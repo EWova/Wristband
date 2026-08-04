@@ -79,7 +79,7 @@ namespace EWova.Wristband
 
                 if (captureOption.Type == SubmitType.Sub)
                 {
-                    WristbandController.MainMenuCircleCountdown(m_captureDelay);
+                    WristbandController.SetCircleController(MainMenuCircleControllerFactory.StartCountdown(m_captureDelay));
                     await UniTask.Delay((int)(m_captureDelay * 1000));
                 }
                 tex = await ScreenshotHelper.Capture(1);

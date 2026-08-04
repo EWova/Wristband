@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 
 using EWova.LearningPortfolio;
 
+using System.Threading;
+
 using UnityEngine;
 
 namespace EWova.Wristband
@@ -70,6 +72,9 @@ namespace EWova.Wristband
             bool isConnected = LearningPortfolio.LearningPortfolio.IsConnected;
             IState nextState = isConnected ? (IState)_viewProfileState : _loginState;
 
+            if (isConnected)
+                CircleButtonElement.Progress = 1.0f;
+
             if (CurrentState == nextState)
                 return;
 
@@ -89,6 +94,7 @@ namespace EWova.Wristband
         }
 
         ConnectProcess _process = null;
+        CancellationTokenSource _connectSource = new CancellationTokenSource();
         protected override async UniTask ProcessClick()
         {
             if (LearningPortfolio.LearningPortfolio.IsConnected)
@@ -119,14 +125,31 @@ namespace EWova.Wristband
                 return;
 
             _process = new ConnectProcess();
-            var process = _process;
-            await LearningPortfolio.LearningPortfolio.ConnectAsync(process, this.destroyCancellationToken);
+            try
+            {
+                CancellationToken token = CancellationTokenSource.CreateLinkedTokenSource(_connectSource.Token, destroyCancellationToken).Token;
 
-            if (!process.IsSuccess)
+                var process = _process;
+                await LearningPortfolio.LearningPortfolio.ConnectAsync(process, token);
+
+                if (!process.IsSuccess)
+                {
+                    if (Logger.ErrorEnabled)
+                        Logger.Err($"Login failed: {process.ClientErrorMessage} {process.ServerErrorMessage}");
+                    return;
+                }
+            }
+            catch (System.Exception ex)
             {
                 if (Logger.ErrorEnabled)
-                    Logger.Err($"Login failed: {process.ClientErrorMessage} {process.ServerErrorMessage}");
+                    Logger.Err($"Login failed: {ex}");
                 return;
+            }
+            finally
+            {
+                _connectSource.Cancel();
+                _connectSource.Dispose();
+                _process = null;
             }
 
             if (Logger.InfoEnabled)
