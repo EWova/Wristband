@@ -207,7 +207,7 @@ namespace EWova.Wristband
                     Logger.Info($"Localization language set to {LocalizationLang}");
             }
 
-            _mainMenuCircleController.Update(Time.deltaTime, MainMenuCircleImage);
+            _mainMenuCircleController?.Update(Time.deltaTime, MainMenuCircleImage);
         }
         private IMainMenuCircleController _mainMenuCircleController;
         internal void SetCircleController(IMainMenuCircleController controller)
