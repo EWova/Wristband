@@ -57,7 +57,7 @@ namespace EWova.Wristband
             {
                 IProgress<float> progress = new Progress<float>(p =>
                 {
-                    wristband.SetCircleController(MainMenuCircleControllerFactory.UpdateDirectly(p));
+                    wristband.SetCircleController(MainMenuCircleControllerFactory.UpdateDirectly(1.0f - p));
                 });
                 var response = await wristband.ApiClient.GetFeaturesCachedAsync(progress, destroyCancellationToken);
                 wristband.LoadFeatures(response.data.features);

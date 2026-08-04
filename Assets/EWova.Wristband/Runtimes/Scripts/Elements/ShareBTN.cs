@@ -137,8 +137,11 @@ namespace EWova.Wristband
                         }
 
                         var bytes = tex.EncodeToJPG(m_jpgQuality);
+
+
                         var uploadResponse = await ApiClient.UploadScreenshotAsync(
-                            new ApiModels.UploadScreenshotRequest { imageData = bytes }
+                            new ApiModels.UploadScreenshotRequest { imageData = bytes },
+                            new System.Progress<float>(p => { WristbandController.SetCircleController(MainMenuCircleControllerFactory.UpdateDirectly(1.0f - p)); })
                         );
 
                         if (!uploadResponse.success)
@@ -186,7 +189,9 @@ namespace EWova.Wristband
                 {
                     imageUrl = WristbandController.LastScreenshot.Url,
                     description = m_shareDescription
-                });
+                },
+                new System.Progress<float>(p => { WristbandController.SetCircleController(MainMenuCircleControllerFactory.UpdateDirectly(1.0f - p)); })
+                );
 
                 if (!callback.success)
                 {
