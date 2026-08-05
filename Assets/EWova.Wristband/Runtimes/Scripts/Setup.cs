@@ -28,11 +28,6 @@ namespace EWova.Wristband
             | WristbandFeatureFlags.QuitApp
             | WristbandFeatureFlags.LearningProfile;
 
-#if UNITY_EDITOR
-        [SerializeField] private bool m_editorOfflineMode = false;
-        [SerializeField] private WristbandFeatureFlags m_editorTestFeatures = WristbandFeatureFlags.GoToEWova | WristbandFeatureFlags.CaptureToEWova | WristbandFeatureFlags.ShareToEWova | WristbandFeatureFlags.ExploreWebsite | WristbandFeatureFlags.QuitApp;
-#endif
-
         private void Start()
         {
             Logger.PrintLevel = LogLevel.Warn | LogLevel.Error;
@@ -42,16 +37,7 @@ namespace EWova.Wristband
         private async UniTaskVoid FetchFeaturesAsync()
         {
             var wristband = GetComponent<Wristband>();
-
-#if UNITY_EDITOR
-            if (m_editorOfflineMode)
-            {
-                if (Logger.InfoEnabled)
-                    Logger.Info("[Editor] Offline mode enabled. Using editor test features.");
-                wristband.LoadFeatures(ToFeatureStates(m_editorTestFeatures));
-                return;
-            }
-#endif
+            wristband.Interactable = false;
 
             try
             {
@@ -61,6 +47,7 @@ namespace EWova.Wristband
                 });
                 var response = await wristband.ApiClient.GetFeaturesCachedAsync(progress, destroyCancellationToken);
                 wristband.LoadFeatures(response.data.features);
+                wristband.Interactable = true;
             }
             catch (OperationCanceledException) { }
             catch (Exception ex)

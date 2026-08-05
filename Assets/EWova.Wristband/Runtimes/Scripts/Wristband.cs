@@ -36,6 +36,12 @@ namespace EWova.Wristband
 
         public RectTransform LearningPortfolioFrame;
 
+        public bool Interactable
+        {
+            get => MainMenuBTN.interactable;
+            set => MainMenuBTN.interactable = value;
+        }
+
         public float MenuTransitionValue => _softAnimT;
 
         private bool _isMenuOpen = false;
@@ -265,7 +271,8 @@ namespace EWova.Wristband
         public float circleAmountSet = 0f;
         public override void Update(float deltaTime, Image circleImage)
         {
-            circleImage.fillAmount = circleAmountSet;
+            float softAmount = Mathf.Lerp(circleImage.fillAmount, circleAmountSet, deltaTime * 20);
+            circleImage.fillAmount = softAmount;
         }
     }
 }
