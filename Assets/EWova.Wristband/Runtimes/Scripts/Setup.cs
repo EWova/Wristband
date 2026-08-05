@@ -51,11 +51,17 @@ namespace EWova.Wristband
             }
             catch (Exception ex)
             {
-                if (Logger.ErrorEnabled)
-                    Logger.Err("Failed to fetch wristband features. Falling back to default features.");
-
                 if (ex is not OperationCanceledException)
+                {
+                    if (Logger.ErrorEnabled)
+                        Logger.Err("Failed to fetch wristband features. Falling back to default features.");
                     Debug.LogException(ex);
+                }
+                else
+                {
+                    if (Logger.InfoEnabled)
+                        Logger.Info("Wristband feature fetch operation was canceled.");
+                }
 
                 wristband.LoadFeatures(ToFeatureStates(m_fallbackFeatures));
                 wristband.Interactable = true;

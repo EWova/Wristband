@@ -85,31 +85,44 @@ namespace EWova.Wristband
             catch (OperationCanceledException) { throw; }
         }
 
-        private UniTask<ApiModels.FeatureResponse>? _cachedFeaturesTask;
+        private ApiModels.FeatureResponse _cachedResponse;
+        private UniTaskCompletionSource<ApiModels.FeatureResponse> _utcs;
 
         /// <summary>
         /// 共用的功能旗標查詢：多個 Wristband/Setup 同時呼叫時只會實際發送一次請求，
         /// 其餘呼叫端共用同一個結果。呼叫端可用自己的 CancellationToken 中止等待，
         /// 不會影響其他呼叫端仍在進行中的請求。
         /// </summary>
-        public UniTask<ApiModels.FeatureResponse> GetFeaturesCachedAsync(
+        public async UniTask<ApiModels.FeatureResponse> GetFeaturesCachedAsync(
             IProgress<float> progress = null,
             CancellationToken ct = default)
         {
-            _cachedFeaturesTask ??= FetchFeaturesForCacheAsync(progress).Preserve();
-            return _cachedFeaturesTask.Value.AttachExternalCancellation(ct);
-        }
+            if (_cachedResponse != null)
+                return _cachedResponse;
 
-        private async UniTask<ApiModels.FeatureResponse> FetchFeaturesForCacheAsync(IProgress<float> progress)
-        {
+            if (_utcs != null)
+                return await _utcs.Task.AttachExternalCancellation(ct);
+
+            _utcs = new UniTaskCompletionSource<ApiModels.FeatureResponse>();
             try
             {
-                return await GetFeaturesAsync(progress, _disposeCts.Token);
+                _cachedResponse = await GetFeaturesAsync(progress).AttachExternalCancellation(ct);
+                _utcs.TrySetResult(_cachedResponse);
+                return _cachedResponse;
             }
-            catch
+            catch (OperationCanceledException)
             {
-                _cachedFeaturesTask = null;
+                _utcs.TrySetCanceled();
                 throw;
+            }
+            catch (Exception ex)
+            {
+                _utcs.TrySetException(ex);
+                throw;
+            }
+            finally
+            {
+                _utcs = null;
             }
         }
 

@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 
+using System;
 using System.Threading;
 
 using UnityEngine;
@@ -9,26 +10,41 @@ namespace EWova.Wristband.Samples.UiExamples
 {
     public static class XRStatus
     {
-        private static UniTask<bool>? _cache;
+        private static bool? _isXRActiveCache;
+        private static UniTaskCompletionSource<bool> _utcs;
 
-        /// <summary>
-        /// 判斷目前是否有 XR 裝置正在運行 (Loader 已啟動且初始化完成)
-        /// </summary>
-        /// <param name="checkInterval">檢查間隔時間 (秒)</param>
-        /// <param name="timeoutSeconds">超時時間 (秒)</param>
-        /// <returns></returns>
-        public static UniTask<bool> IsXRActiveAsync(
+        public static async UniTask<bool> IsXRActiveAsync(
             float checkInterval = 0.5f,
             float timeoutSeconds = 3.0f,
             CancellationToken cancellationToken = default)
         {
-            try { _cache ??= InternalIsXRActiveAsync().Preserve(); }
-            catch
+            if (_isXRActiveCache.HasValue)
+                return _isXRActiveCache.Value;
+
+            if (_utcs != null)
+                return await _utcs.Task.AttachExternalCancellation(cancellationToken);
+
+            _utcs = new UniTaskCompletionSource<bool>();
+            try
             {
-                _cache = null;
+                _isXRActiveCache = await InternalIsXRActiveAsync(checkInterval, timeoutSeconds).AttachExternalCancellation(cancellationToken);
+                _utcs.TrySetResult(_isXRActiveCache.Value);
+                return _isXRActiveCache.Value;
+            }
+            catch (OperationCanceledException)
+            {
+                _utcs.TrySetCanceled();
                 throw;
             }
-            return _cache.Value.AttachExternalCancellation(cancellationToken);
+            catch (Exception ex)
+            {
+                _utcs.TrySetException(ex);
+                throw;
+            }
+            finally
+            {
+                _utcs = null;
+            }
         }
 
         private static async UniTask<bool> InternalIsXRActiveAsync(
