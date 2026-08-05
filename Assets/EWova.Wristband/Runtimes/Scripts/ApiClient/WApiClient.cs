@@ -1,4 +1,5 @@
 using EWova.LearningPortfolio;
+
 using System.Collections.Generic;
 
 namespace EWova.Wristband
@@ -13,7 +14,10 @@ namespace EWova.Wristband
         [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetInstanceForDomainReload()
         {
-            _instance = null;
+            Authoring.EditorDomainReleaseHelper.CleanupOneShot += () =>
+            {
+                _instance = null;
+            };
         }
 #endif
 
