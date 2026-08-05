@@ -8,7 +8,7 @@
   },
   "samples": [
     {
-      "displayName": "UI 使用範例",
+      "displayName": "UI Examples",
       "description": "在 PC 與 XR 環境下使用 Wristband UI 擺放範例",
       "path": "Samples~/UI Examples"
     }
