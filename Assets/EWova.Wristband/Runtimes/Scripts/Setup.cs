@@ -43,9 +43,11 @@ namespace EWova.Wristband
             {
                 IProgress<float> progress = new Progress<float>(p =>
                 {
+                    Debug.LogError($"Fetching wristband features: {p * 100.0f}%");
                     wristband.SetCircleController(MainMenuCircleControllerFactory.UpdateDirectly(1.0f - p));
                 });
                 var response = await wristband.ApiClient.GetFeaturesCachedAsync(progress, destroyCancellationToken);
+                Debug.LogError($"Fetching wristband features: OK");
                 wristband.LoadFeatures(response.data.features);
                 wristband.Interactable = true;
             }
