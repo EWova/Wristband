@@ -3,7 +3,12 @@
   "version": "2026.8.3",
   "displayName": "EWova.Wristband",
   "description": "整合於教材應用，支援 EWova 跳轉、切換與分享畫面，並串聯 ewova 社群互動，提升操作效率與學習體驗。",
+  "author": {
+    "name": "EWova"
+  },
+  "unity": "2021.3",
   "dependencies": {
+    "com.ewova.core": "1.7.0",
     "com.ewova.learningportfoliosdk": "2026.8.3"
   },
   "samples": [
@@ -12,5 +17,8 @@
       "description": "在 PC 與 XR 環境下使用 Wristband UI 擺放範例",
       "path": "Samples~/UI Examples"
     }
-  ]
+  ],
+  "documentationUrl": "https://wiki.ewova.com/zh-tw/LearningPortfolio/2026/Wristband",
+  "changelogUrl": "https://github.com/EWova/Wristband/tree/master/Assets/EWova.Wristband/CHANGELOG.md",
+  "license": "MIT"
 }
