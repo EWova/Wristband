@@ -83,6 +83,15 @@ namespace EWova.Wristband
             CircleButtonElement.Image.sprite = CurrentState.Sprite;
         }
 
+        protected override void OnMenuStateChanged(bool isMenuOpen)
+        {
+            if(!isMenuOpen && _projectRecordShower != null)
+            {
+                _projectRecordShower.Close();
+                _projectRecordShower = null;
+            }
+        }
+
         protected override UniTask Load(LoadProcess loadProcess)
         {
             base.Load(loadProcess);
@@ -95,12 +104,15 @@ namespace EWova.Wristband
 
         ConnectProcess _process = null;
         CancellationTokenSource _connectSource = null;
+        private ProjectRecordShower _projectRecordShower = null;
+
         protected override async UniTask ProcessClick()
         {
             if (LearningPortfolio.LearningPortfolio.IsConnected)
             {
                 SyncState();
-                LearningPortfolio.LearningPortfolio.CreateUserProjectRecordShower(WristbandController.LearningPortfolioFrame);
+                _projectRecordShower =
+                    LearningPortfolio.LearningPortfolio.CreateUserProjectSheetShower(WristbandController.LearningPortfolioFrame);
                 return;
             }
 
