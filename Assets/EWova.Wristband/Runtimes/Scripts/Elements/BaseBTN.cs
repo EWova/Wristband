@@ -110,6 +110,7 @@ namespace EWova.Wristband
         protected abstract UniTask ProcessClick();
 
         protected virtual void UpdateBaseState() { }
+        protected virtual void OnMenuStateChanged(bool isMenuOpen) { }
         protected virtual void OnLanguageChanged(Localization.ITextProvider textProvider)
         {
             if (!string.IsNullOrEmpty(LabelKey))
@@ -123,6 +124,7 @@ namespace EWova.Wristband
         protected void SyncState()
         {
             UpdateBaseState();
+            OnMenuStateChanged(WristbandController.IsMenuOpen);
 
             bool featureVisible = true;
             bool featureEnabled = true;

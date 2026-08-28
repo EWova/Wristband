@@ -43,6 +43,7 @@ namespace EWova.Wristband
         }
 
         public float MenuTransitionValue => _softAnimT;
+        public bool IsMenuOpen => _isMenuOpen;
 
         private bool _isMenuOpen = false;
         private bool t_isMenuOpen = false;
@@ -191,6 +192,7 @@ namespace EWova.Wristband
                         Logger.Info("Idle time exceeded 5 seconds. Closing menu.");
                     _isMenuOpen = false;
                     _openingIdleTime = 0f;
+                    OnButtonInvoke?.Invoke();
                 }
             }
             else
