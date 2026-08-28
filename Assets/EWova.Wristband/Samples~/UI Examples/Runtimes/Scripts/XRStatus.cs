@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 
 using UnityEngine;
-#if EWOVA_XR_MANAGEMENT
+#if XR_MANAGEMENT_AVAILABLE
 using UnityEngine.XR.Management;
 #endif
 
@@ -69,7 +69,7 @@ namespace EWova.Wristband.Samples.UiExamples
         {
             get
             {
-#if EWOVA_XR_MANAGEMENT
+#if XR_MANAGEMENT_AVAILABLE
                 var settings = XRGeneralSettings.Instance;
                 if (settings == null || settings.Manager == null)
                     return false;

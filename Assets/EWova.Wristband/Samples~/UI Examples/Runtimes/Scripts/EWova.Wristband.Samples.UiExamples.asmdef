@@ -19,7 +19,7 @@
         {
             "name": "com.unity.xr.management",
             "expression": "",
-            "define": "EWOVA_XR_MANAGEMENT"
+            "define": "XR_MANAGEMENT_AVAILABLE"
         }
     ],
     "noEngineReferences": false
