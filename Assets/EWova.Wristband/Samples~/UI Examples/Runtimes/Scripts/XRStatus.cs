@@ -4,7 +4,9 @@ using System;
 using System.Threading;
 
 using UnityEngine;
+#if EWOVA_XR_MANAGEMENT
 using UnityEngine.XR.Management;
+#endif
 
 namespace EWova.Wristband.Samples.UiExamples
 {
@@ -67,12 +69,16 @@ namespace EWova.Wristband.Samples.UiExamples
         {
             get
             {
+#if EWOVA_XR_MANAGEMENT
                 var settings = XRGeneralSettings.Instance;
                 if (settings == null || settings.Manager == null)
                     return false;
 
                 return settings.Manager.isInitializationComplete
                        && settings.Manager.activeLoader != null;
+#else
+                return false;
+#endif
             }
         }
     }
