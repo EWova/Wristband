@@ -76,6 +76,16 @@ namespace EWova.Wristband
 
         public DefaultTextProvider LocalizeTextProvider { get; private set; }
 
+        /// <summary>
+        /// 供第三方在不修改此 package 的情況下切換到 <see cref="LocalizationLang"/> 未收錄的語系。
+        /// 通常先用 <see cref="DefaultTextProvider.MergeTsv"/> 匯入該語系的翻譯，再呼叫這個刷新畫面。
+        /// </summary>
+        public void SetLanguageByCode(string languageCode)
+        {
+            LocalizeTextProvider.SetLanguageByCode(languageCode);
+            Localizer.DoLocalizeUpdate(LocalizeTextProvider);
+        }
+
         private readonly Dictionary<string, ApiModels.Feature> _features = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>供各 BaseBTN 依自己的 FeatureKey 向此拉取目前的顯示/啟用狀態。</summary>

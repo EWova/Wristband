@@ -15,8 +15,9 @@ namespace EWova.Wristband
 
     public class DefaultTextProvider : ITextProvider
     {
-        private readonly Dictionary<LocalizationLang, Dictionary<string, string>> _cache = new();
+        private readonly Dictionary<string, Dictionary<string, string>> _cache = new(StringComparer.OrdinalIgnoreCase);
         private LocalizationLang _currentSetting = LocalizationLang.auto;
+        private string _currentLanguageCode = "en";
 
         private DefaultTextProvider() { }
 
@@ -28,13 +29,34 @@ namespace EWova.Wristband
                 if (value == LocalizationLang.auto)
                     value = GetSystemLanguage();
 
-                if (value != _currentSetting)
-                {
-                    _currentSetting = value;
-                    OnLanguageChanged?.Invoke(this);
-                }
+                _currentSetting = value;
+                SetLanguageCodeInternal(GetCode(value) ?? "en");
             }
         }
+
+        /// <summary>目前實際查表使用的語系代碼（含透過 <see cref="SetLanguageByCode"/> 設定、不在 <see cref="LocalizationLang"/> 裡的自訂語系）。</summary>
+        public string CurrentLanguageCode => _currentLanguageCode;
+
+        /// <summary>
+        /// 供第三方在不修改此 package 的情況下切換到 <see cref="LocalizationLang"/> 未收錄的語系。
+        /// 搭配 <see cref="MergeTsv"/> 匯入的自訂語系欄位使用，例如 SetLanguageByCode("th")。
+        /// </summary>
+        public void SetLanguageByCode(string languageCode)
+        {
+            if (string.IsNullOrEmpty(languageCode))
+                return;
+            SetLanguageCodeInternal(languageCode);
+        }
+
+        private void SetLanguageCodeInternal(string code)
+        {
+            if (!string.Equals(_currentLanguageCode, code, StringComparison.OrdinalIgnoreCase))
+            {
+                _currentLanguageCode = code;
+                OnLanguageChanged?.Invoke(this);
+            }
+        }
+
         public event Action<ITextProvider> OnLanguageChanged;
 
         private static string GetCode(LocalizationLang lang)
@@ -53,7 +75,7 @@ namespace EWova.Wristband
 
         public string GetLocalizedString(string key)
         {
-            return GetLocalizedStringInternal(key, CurrentSetting);
+            return GetLocalizedStringInternal(key, _currentLanguageCode);
         }
 
         public string GetLocalizedString(string key, LocalizationLang targetLang)
@@ -61,21 +83,27 @@ namespace EWova.Wristband
             if (targetLang == LocalizationLang.auto)
                 targetLang = GetSystemLanguage();
 
-            return GetLocalizedStringInternal(key, targetLang);
+            return GetLocalizedStringInternal(key, GetCode(targetLang) ?? "en");
         }
 
-        private string GetLocalizedStringInternal(string key, LocalizationLang targetLang)
+        /// <summary>供第三方以任意語系代碼（不需要在 <see cref="LocalizationLang"/> 裡）查表。</summary>
+        public string GetLocalizedString(string key, string languageCode)
         {
-            if (_cache.TryGetValue(targetLang, out var langDict))
+            return GetLocalizedStringInternal(key, languageCode);
+        }
+
+        private string GetLocalizedStringInternal(string key, string languageCode)
+        {
+            if (_cache.TryGetValue(languageCode, out var langDict))
             {
                 if (langDict.TryGetValue(key, out string value))
                     return value;
             }
 
             // Fallback to English if the target language is not found
-            if (targetLang != LocalizationLang.en && _cache.ContainsKey(LocalizationLang.en))
+            if (!string.Equals(languageCode, "en", StringComparison.OrdinalIgnoreCase) && _cache.TryGetValue("en", out var enDict))
             {
-                if (_cache[LocalizationLang.en].TryGetValue(key, out string enValue))
+                if (enDict.TryGetValue(key, out string enValue))
                     return enValue;
             }
 
@@ -103,37 +131,37 @@ namespace EWova.Wristband
                 return null;
             }
             DefaultTextProvider provider = new DefaultTextProvider();
-            provider.LoadFromTsv(content);
+            provider.LoadFromTsv(content, clear: true);
             return provider;
         }
 
-        private void LoadFromTsv(string tsvContent)
+        /// <summary>
+        /// 供第三方在不修改此 package 的情況下，把額外的翻譯（可包含全新語系欄位，例如 "th"）合併進現有資料。
+        /// 不會清掉既有翻譯，同 key/語系會被覆蓋。搭配 <see cref="SetLanguageByCode"/> 切換到新語系。
+        /// </summary>
+        public void MergeTsv(string tsvContent)
         {
-            _cache.Clear();
+            LoadFromTsv(tsvContent, clear: false);
+        }
+
+        private void LoadFromTsv(string tsvContent, bool clear)
+        {
+            if (clear)
+                _cache.Clear();
+
             string[] lines = tsvContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length == 0) return;
 
             string[] headers = lines[0].Split('\t');
-            Dictionary<int, LocalizationLang> columnMap = new Dictionary<int, LocalizationLang>();
+            Dictionary<int, string> columnMap = new Dictionary<int, string>();
 
-            foreach (LocalizationLang lang in Enum.GetValues(typeof(LocalizationLang)))
-            {
-                if (lang == LocalizationLang.auto) continue;
-                _cache[lang] = new Dictionary<string, string>();
-            }
-
+            // 任何 header 文字都視為一個語系代碼，不限於 LocalizationLang 已知的欄位，
+            // 這樣第三方就能透過額外的 TSV 新增此 package 完全不認得的語系。
             for (int i = 1; i < headers.Length; i++)
             {
-                string header = headers[i].Trim();
-                foreach (LocalizationLang lang in Enum.GetValues(typeof(LocalizationLang)))
-                {
-                    if (lang == LocalizationLang.auto) continue;
-                    if (header.Equals(GetCode(lang), StringComparison.OrdinalIgnoreCase))
-                    {
-                        columnMap[i] = lang;
-                        break;
-                    }
-                }
+                string code = headers[i].Trim();
+                if (!string.IsNullOrEmpty(code))
+                    columnMap[i] = code;
             }
 
             for (int i = 1; i < lines.Length; i++)
@@ -147,18 +175,19 @@ namespace EWova.Wristband
                 foreach (var entry in columnMap)
                 {
                     int colIdx = entry.Key;
-                    LocalizationLang lang = entry.Value;
+                    string code = entry.Value;
 
                     if (cells.Length > colIdx)
                     {
+                        if (!_cache.TryGetValue(code, out var langDict))
+                            _cache[code] = langDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
                         string value = cells[colIdx].Trim().Replace("\\n", "\n");
-                        _cache[lang][key] = value;
+                        langDict[key] = value;
                     }
                 }
             }
         }
-
-
 
         private LocalizationLang GetSystemLanguage()
         {
