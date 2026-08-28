@@ -1,7 +1,5 @@
 using System.IO;
 
-using UnityEditor;
-
 using UnityEngine;
 
 [UnityEditor.AssetImporters.ScriptedImporter(1, "tsv")]
@@ -12,6 +10,5 @@ public class TSVImporter : UnityEditor.AssetImporters.ScriptedImporter
         TextAsset textAsset = new TextAsset(File.ReadAllText(ctx.assetPath));
         ctx.AddObjectToAsset(Path.GetFileNameWithoutExtension(ctx.assetPath), textAsset);
         ctx.SetMainObject(textAsset);
-        AssetDatabase.SaveAssets();
     }
 }
