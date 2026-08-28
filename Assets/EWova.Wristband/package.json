@@ -1,6 +1,6 @@
 {
   "name": "com.ewova.wristband",
-  "version": "2026.8.3",
+  "version": "2026.8.4",
   "displayName": "EWova.Wristband",
   "description": "整合於教材應用，支援 EWova 跳轉、切換與分享畫面，並串聯 ewova 社群互動，提升操作效率與學習體驗。",
   "author": {
@@ -9,7 +9,7 @@
   "unity": "2021.3",
   "dependencies": {
     "com.ewova.core": "1.7.0",
-    "com.ewova.learningportfoliosdk": "2026.8.3"
+    "com.ewova.learningportfoliosdk": "2026.8.4"
   },
   "samples": [
     {
