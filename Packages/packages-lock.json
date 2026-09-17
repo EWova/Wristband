@@ -12,16 +12,16 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "08c8bb238d737a99b925b1e14b11438bfcc5bbf3"
+      "hash": "11434564ac1818ea534bb634908c987f1b39a19c"
     },
     "com.ewova.learningportfoliosdk": {
       "version": "https://github.com/EWova/LearningPortfolioSDK.git?path=Assets/EWova.LearningPortfolioSDK#dev",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.ewova.core": "1.7.0"
+        "com.ewova.core": "1.9.0"
       },
-      "hash": "0f8d0ed30b509ede301dba8ec3cc4cb7fe6f44e3"
+      "hash": "9779e729fdf12a9ffa44ef99968d95a267a1deb2"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

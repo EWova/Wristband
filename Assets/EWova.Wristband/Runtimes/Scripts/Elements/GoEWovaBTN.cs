@@ -75,7 +75,7 @@ namespace EWova.Wristband
 
             bool wasInEWova = invokeContext != null;
             bool wasInEWovaSpace = invokeContext != null
-                && invokeContext.WorldGuid != null && invokeContext.SpaceInstanceIndex != null;
+                && invokeContext.WorldGuid != null && invokeContext.SpaceGuid != null;
 
             IState nextState;
 
