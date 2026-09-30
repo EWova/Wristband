@@ -11,8 +11,8 @@
 ### 相依套件（需一併安裝）：
 | 套件 | git URL |
 |---|---|
-| `com.ewova.core` | `https://github.com/EWova/UnityPackageCore.git?path=Assets/EWova.Core#Dev` (目前暫時使用 Dev 分支) |
-| `com.ewova.learningportfoliosdk` | `https://github.com/EWova/LearningPortfolioSDK.git?path=Assets/EWova.LearningPortfolioSDK#dev.2026.6`  (目前暫時使用 Dev 分支) |
+| `com.ewova.core` | `https://github.com/EWova/UnityPackageCore.git?path=Assets/EWova.Core` |
+| `com.ewova.learningportfoliosdk` | `https://github.com/EWova/LearningPortfolioSDK.git?path=Assets/EWova.LearningPortfolioSDK` |
 
 ## 功能大綱
 - **功能按鈕**：
